@@ -2,8 +2,14 @@
 <html lang="zh-HK">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <!-- iOS Web App (PWA) 專屬設定 -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Melody倒數">
+    <meta name="theme-color" content="#FFF0F5" id="metaThemeColor">
     <title>My Melody 夢幻倒數日記 🌸</title>
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Zen+Maru+Gothic:wght@400;500;700;900&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
@@ -15,14 +21,14 @@
                 extend: {
                     colors: {
                         melody: {
-                            light: '#FFF0F5',
-                            bg: '#FFE4EE',
-                            pink: '#FFB6C1',
-                            hot: '#FF69B4',
-                            dark: '#D63384',
+                            light: 'var(--bg-light)',
+                            bg: 'var(--bg-secondary)',
+                            pink: 'var(--border-main)',
+                            hot: 'var(--accent-main)',
+                            dark: 'var(--accent-dark)',
                             bow: '#FFF68F',
-                            brown: '#6D4C53',
-                            softbrown: '#9E7B83'
+                            brown: 'var(--text-main)',
+                            softbrown: 'var(--text-muted)'
                         }
                     },
                     fontFamily: {
@@ -34,42 +40,109 @@
     </script>
 
     <style>
+        :root {
+            /* 預設：My Melody 甜美粉紅主題 */
+            --bg-light: #FFF0F5;
+            --bg-secondary: #FFE4EE;
+            --card-bg: rgba(255, 255, 255, 0.94);
+            --border-main: #FFB6C1;
+            --accent-main: #FF69B4;
+            --accent-dark: #D63384;
+            --text-main: #5E3A43;
+            --text-muted: #9E7B83;
+            --dot-1: #FFB6C1;
+            --dot-2: #FFCCE5;
+            --timebox-bg-1: #FFF5F8;
+            --timebox-bg-2: #FFE0EB;
+            --timebox-border: #FFC2D4;
+        }
+
+        [data-theme="kuromi"] {
+            /* Kuromi 型格紫黑護眼深色主題 */
+            --bg-light: #1E162B;
+            --bg-secondary: #2D2042;
+            --card-bg: rgba(43, 31, 62, 0.94);
+            --border-main: #7E57C2;
+            --accent-main: #C084FC;
+            --accent-dark: #9333EA;
+            --text-main: #F3E8FF;
+            --text-muted: #C4B5FD;
+            --dot-1: #4C3575;
+            --dot-2: #372554;
+            --timebox-bg-1: #35254E;
+            --timebox-bg-2: #241838;
+            --timebox-border: #6D48A8;
+        }
+
+        [data-theme="twinstars"] {
+            /* Little Twin Stars 夢幻粉藍星空主題 */
+            --bg-light: #F0F7FF;
+            --bg-secondary: #E0EEFF;
+            --card-bg: rgba(255, 255, 255, 0.94);
+            --border-main: #A5D8FF;
+            --accent-main: #FF85C0;
+            --accent-dark: #5C7CFA;
+            --text-main: #3B4D6B;
+            --text-muted: #748FFC;
+            --dot-1: #A5D8FF;
+            --dot-2: #FFD6E8;
+            --timebox-bg-1: #F3F9FF;
+            --timebox-bg-2: #FFF0F6;
+            --timebox-border: #BAC8FF;
+        }
+
+        * {
+            -webkit-tap-highlight-color: transparent;
+        }
+
         body {
             font-family: 'Zen Maru Gothic', 'Fredoka', sans-serif;
-            background-color: #FFF0F5;
+            background-color: var(--bg-light);
             background-image: 
-                radial-gradient(#FFB6C1 1.5px, transparent 1.5px), 
-                radial-gradient(#FFCCE5 1.5px, #FFF0F5 1.5px);
+                radial-gradient(var(--dot-1) 1.5px, transparent 1.5px), 
+                radial-gradient(var(--dot-2) 1.5px, var(--bg-light) 1.5px);
             background-size: 40px 40px;
             background-position: 0 0, 20px 20px;
-            color: #6D4C53;
+            color: var(--text-main);
             overflow-x: hidden;
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: calc(95px + env(safe-area-inset-bottom));
+            transition: background-color 0.35s ease, color 0.35s ease;
+        }
+
+        /* 防止 iPhone Safari 點擊 input 時自動放大畫面 */
+        input, select, textarea {
+            font-size: 16px !important;
         }
 
         /* 蕾絲與夢幻邊框效果 */
         .melody-card {
-            background: rgba(255, 255, 255, 0.92);
-            backdrop-filter: blur(8px);
-            border: 3px solid #FFB6C1;
-            box-shadow: 0 10px 25px -5px rgba(255, 105, 180, 0.18), 0 0 0 4px #FFF;
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 3px solid var(--border-main);
+            box-shadow: 0 10px 25px -5px rgba(255, 105, 180, 0.16), 0 0 0 3px rgba(255,255,255,0.2);
+            transition: all 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
         .melody-card:hover {
-            transform: translateY(-5px) scale(1.01);
-            box-shadow: 0 16px 30px -5px rgba(255, 105, 180, 0.28), 0 0 0 4px #FFF;
-            border-color: #FF69B4;
+            transform: translateY(-3px);
+            border-color: var(--accent-main);
         }
 
-        .lace-border {
-            background-image: radial-gradient(circle at 10px -5px, transparent 12px, #FFF 13px);
-            background-size: 20px 20px;
+        /* 7日內緊急閃耀邊框 */
+        @keyframes urgentGlow {
+            0%, 100% { border-color: #FF69B4; box-shadow: 0 0 15px rgba(255, 105, 180, 0.45), 0 0 0 3px #FFF68F; }
+            50% { border-color: #FFB703; box-shadow: 0 0 22px rgba(255, 183, 3, 0.65), 0 0 0 4px #FF69B4; }
+        }
+        .urgent-card {
+            animation: urgentGlow 2.2s infinite ease-in-out;
         }
 
         /* 浮動動畫 */
         @keyframes float {
             0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-8px) rotate(2deg); }
+            50% { transform: translateY(-7px) rotate(2deg); }
         }
         .animate-float {
             animation: float 3.5s ease-in-out infinite;
@@ -77,165 +150,136 @@
 
         @keyframes ear-wiggle {
             0%, 100% { transform: rotate(0deg); }
-            25% { transform: rotate(-4deg); }
-            75% { transform: rotate(4deg); }
+            25% { transform: rotate(-5deg); }
+            75% { transform: rotate(5deg); }
         }
-        .wiggle-ears:hover {
-            animation: ear-wiggle 0.6s ease-in-out infinite;
+        .wiggle-ears:hover, .wiggle-ears:active {
+            animation: ear-wiggle 0.5s ease-in-out infinite;
         }
 
-        /* 自訂可愛捲軸 */
-        ::-webkit-scrollbar {
-            width: 10px;
+        /* 隱藏橫向滾動條但保留滑動體驗 */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
         }
-        ::-webkit-scrollbar-track {
-            background: #FFF0F5;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #FFB6C1;
-            border-radius: 9999px;
-            border: 2px solid #FFF0F5;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #FF69B4;
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
 
         /* 按鈕立體糖果感 */
         .candy-btn {
-            background: linear-gradient(180deg, #FF8DA1 0%, #FF69B4 100%);
-            box-shadow: 0 4px 0 #D63384, 0 6px 12px rgba(255, 105, 180, 0.35);
+            background: linear-gradient(180deg, var(--accent-main) 0%, var(--accent-dark) 100%);
+            box-shadow: 0 4px 0 var(--accent-dark), 0 6px 12px rgba(214, 51, 132, 0.3);
             transition: all 0.15s ease;
-        }
-        .candy-btn:hover {
-            filter: brightness(1.05);
-            transform: translateY(-1px);
-            box-shadow: 0 5px 0 #D63384, 0 8px 15px rgba(255, 105, 180, 0.4);
         }
         .candy-btn:active {
             transform: translateY(3px);
-            box-shadow: 0 1px 0 #D63384, 0 2px 5px rgba(255, 105, 180, 0.3);
+            box-shadow: 0 1px 0 var(--accent-dark);
         }
 
         .candy-btn-secondary {
-            background: linear-gradient(180deg, #FFFFFF 0%, #FFF0F5 100%);
-            border: 2px solid #FFB6C1;
-            box-shadow: 0 3px 0 #FFB6C1;
+            background: var(--card-bg);
+            border: 2px solid var(--border-main);
+            box-shadow: 0 3px 0 var(--border-main);
+            color: var(--text-main);
             transition: all 0.15s ease;
-        }
-        .candy-btn-secondary:hover {
-            background: #FFE4EE;
-            transform: translateY(-1px);
         }
         .candy-btn-secondary:active {
             transform: translateY(2px);
-            box-shadow: 0 1px 0 #FFB6C1;
+            box-shadow: 0 1px 0 var(--border-main);
         }
 
         /* 倒數數字方格 */
         .time-box {
-            background: linear-gradient(145deg, #FFF5F8, #FFE0EB);
-            border: 2px solid #FFC2D4;
-            box-shadow: inset 0 2px 4px rgba(255,255,255,0.8), 0 3px 6px rgba(255, 105, 180, 0.1);
+            background: linear-gradient(145deg, var(--timebox-bg-1), var(--timebox-bg-2));
+            border: 2px solid var(--timebox-border);
+            box-shadow: inset 0 2px 4px rgba(255,255,255,0.25), 0 3px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        /* iPhone 底部導航欄安全距離 */
+        .bottom-nav-safe {
+            padding-bottom: max(0.6rem, env(safe-area-inset-bottom));
         }
     </style>
 </head>
-<body class="min-h-screen pb-16 relative selection:bg-melody-pink selection:text-white">
+<body class="min-h-screen relative selection:bg-pink-400 selection:text-white">
 
     <!-- 背景裝飾漂浮元素 -->
-    <div class="fixed inset-0 pointer-events-none overflow-hidden z-0 opacity-60">
-        <div class="absolute top-12 left-6 text-3xl animate-float" style="animation-delay: 0s;">🌸</div>
-        <div class="absolute top-32 right-8 text-2xl animate-float" style="animation-delay: 1s;">🍓</div>
-        <div class="absolute bottom-24 left-10 text-3xl animate-float" style="animation-delay: 2s;">🎀</div>
-        <div class="absolute bottom-40 right-12 text-2xl animate-float" style="animation-delay: 1.5s;">🍰</div>
-        <div class="absolute top-1/2 left-4 text-xl animate-float" style="animation-delay: 0.5s;">✨</div>
+    <div class="fixed inset-0 pointer-events-none overflow-hidden z-0 opacity-50">
+        <div class="absolute top-12 left-4 text-2xl sm:text-3xl animate-float" style="animation-delay: 0s;">🌸</div>
+        <div class="absolute top-28 right-6 text-xl sm:text-2xl animate-float" style="animation-delay: 1s;">🍓</div>
+        <div class="absolute bottom-32 left-8 text-2xl sm:text-3xl animate-float" style="animation-delay: 2s;">🎀</div>
+        <div class="absolute bottom-44 right-10 text-xl sm:text-2xl animate-float" style="animation-delay: 1.5s;">🍰</div>
     </div>
 
-    <!-- 頂部導航與 My Melody 標題區 -->
-    <header class="relative z-10 pt-6 pb-4 px-4 max-w-6xl mx-auto">
-        <div class="melody-card rounded-3xl p-4 sm:p-6 flex flex-col md:flex-row items-center justify-between gap-4 relative overflow-hidden">
-            <!-- 頂部粉紅波浪裝飾 -->
-            <div class="absolute top-0 left-0 right-0 h-3 bg-gradient-to-r from-melody-pink via-melody-hot to-melody-pink opacity-80"></div>
+    <!-- 頂部導航與角色標題區 -->
+    <header class="relative z-10 pt-3 sm:pt-6 pb-3 px-3 sm:px-6 max-w-6xl mx-auto">
+        <div class="melody-card rounded-3xl p-4 sm:p-5 flex flex-col lg:flex-row items-center justify-between gap-4 relative overflow-hidden">
+            <div class="absolute top-0 left-0 right-0 h-2.5 bg-gradient-to-r from-pink-300 via-pink-500 to-purple-400 opacity-85"></div>
 
-            <!-- 左側：My Melody 矢量公仔 + 標題 -->
-            <div class="flex items-center gap-4">
-                <div class="w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0 wiggle-ears cursor-pointer" onclick="triggerMelodyGreeting()" title="撳我同 Melody 打招呼！">
-                    <!-- 手繪風格 My Melody SVG -->
-                    <svg viewBox="0 0 200 200" class="w-full h-full drop-shadow-md">
-                        <!-- 左耳 (直立) -->
-                        <path d="M55 95 C 40 30, 65 10, 85 20 C 100 30, 95 75, 92 90 Z" fill="#FF69B4" stroke="#6D4C53" stroke-width="5" stroke-linejoin="round"/>
-                        <!-- 右耳 (微彎曲可愛感) -->
-                        <path d="M108 90 C 110 60, 125 15, 148 25 C 168 35, 155 85, 145 98 Z" fill="#FF69B4" stroke="#6D4C53" stroke-width="5" stroke-linejoin="round"/>
-                        <!-- 頭巾主體 -->
-                        <ellipse cx="100" cy="128" rx="64" ry="52" fill="#FF69B4" stroke="#6D4C53" stroke-width="5"/>
-                        <!-- 白色臉蛋 -->
-                        <ellipse cx="100" cy="136" rx="46" ry="36" fill="#FFFFFF" stroke="#6D4C53" stroke-width="4"/>
-                        <!-- 頭巾小尖角 (額頭中間) -->
-                        <path d="M92 98 Q100 108 108 98" fill="#FF69B4" stroke="#6D4C53" stroke-width="4" stroke-linecap="round"/>
-                        <!-- 經典小黃花 / 蝴蝶結 (右耳根部) -->
-                        <g transform="translate(132, 85) rotate(15)">
-                            <!-- 花瓣 -->
-                            <circle cx="0" cy="-12" r="9" fill="#FFFFFF" stroke="#6D4C53" stroke-width="3.5"/>
-                            <circle cx="11" cy="-4" r="9" fill="#FFFFFF" stroke="#6D4C53" stroke-width="3.5"/>
-                            <circle cx="7" cy="10" r="9" fill="#FFFFFF" stroke="#6D4C53" stroke-width="3.5"/>
-                            <circle cx="-7" cy="10" r="9" fill="#FFFFFF" stroke="#6D4C53" stroke-width="3.5"/>
-                            <circle cx="-11" cy="-4" r="9" fill="#FFFFFF" stroke="#6D4C53" stroke-width="3.5"/>
-                            <!-- 花蕊 -->
-                            <circle cx="0" cy="0" r="7" fill="#FFDF5B" stroke="#6D4C53" stroke-width="3.5"/>
-                        </g>
-                        <!-- 眼睛 -->
-                        <ellipse cx="75" cy="136" rx="4.5" ry="6.5" fill="#6D4C53"/>
-                        <circle cx="73.5" cy="134" r="1.5" fill="#FFFFFF"/>
-                        <ellipse cx="125" cy="136" rx="4.5" ry="6.5" fill="#6D4C53"/>
-                        <circle cx="123.5" cy="134" r="1.5" fill="#FFFFFF"/>
-                        <!-- 黃色小鼻子 -->
-                        <ellipse cx="100" cy="142" rx="5.5" ry="4" fill="#FFDF5B" stroke="#6D4C53" stroke-width="3.5"/>
-                        <!-- 粉紅腮紅 -->
-                        <ellipse cx="64" cy="144" rx="7" ry="4" fill="#FFB6C1" opacity="0.8"/>
-                        <ellipse cx="136" cy="144" rx="7" ry="4" fill="#FFB6C1" opacity="0.8"/>
-                    </svg>
+            <!-- 左側：動態角色 SVG + 標題 -->
+            <div class="flex items-center gap-3.5 sm:gap-4 w-full lg:w-auto">
+                <div id="mascotContainer" class="w-16 h-16 sm:w-24 sm:h-24 flex-shrink-0 wiggle-ears cursor-pointer" onclick="triggerMelodyGreeting()" title="撳我打招呼！">
+                    <!-- 由 JS 根據主題渲染 My Melody / Kuromi / Twin Stars SVG -->
                 </div>
 
-                <div>
-                    <div class="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-melody-bg text-melody-dark text-xs font-bold mb-1 border border-melody-pink">
-                        <span>🎀 Sanrio Cute Timer</span>
+                <div class="min-w-0 flex-1">
+                    <div class="flex flex-wrap items-center gap-1.5 mb-1">
+                        <span id="themeBadgeText" class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-melody-bg text-melody-dark text-[11px] font-bold border border-melody-pink">
+                            🎀 Sanrio Cute Timer
+                        </span>
+                        <span id="cloudStatusBadge" onclick="openCloudModal()" class="cursor-pointer inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-[11px] font-bold border border-emerald-300">
+                            ☁️ 本機儲存
+                        </span>
                     </div>
-                    <h1 class="text-2xl sm:text-3xl font-black text-melody-dark tracking-tight flex items-center gap-2">
+                    <h1 id="appMainTitle" class="text-xl sm:text-3xl font-black text-melody-dark tracking-tight truncate">
                         My Melody 倒數日記
                     </h1>
-                    <p id="melodySpeech" class="text-xs sm:text-sm text-melody-softbrown font-medium mt-0.5">
+                    <p id="melodySpeech" class="text-xs sm:text-sm text-melody-softbrown font-medium mt-0.5 line-clamp-1">
                         「一齊期待每一個特別又幸福嘅日子啦～♪」
                     </p>
                 </div>
             </div>
 
-            <!-- 右側：工具列按鈕 -->
-            <div class="flex flex-wrap items-center justify-center gap-2.5 w-full md:w-auto">
-                <button onclick="openModal()" class="candy-btn text-white font-bold px-5 py-2.5 rounded-2xl flex items-center gap-2 text-sm sm:text-base">
-                    <span class="text-lg">＋</span> 新增倒數日子
-                </button>
-                <button id="soundToggleBtn" onclick="toggleSound()" class="candy-btn-secondary text-melody-brown font-bold px-3.5 py-2.5 rounded-2xl text-sm flex items-center gap-1.5" title="音效開關">
-                    <span id="soundIcon">🔊</span>
-                </button>
-                <button onclick="openBackupModal()" class="candy-btn-secondary text-melody-brown font-bold px-3.5 py-2.5 rounded-2xl text-sm flex items-center gap-1.5" title="備份與還原">
-                    <span>💾</span> <span class="hidden sm:inline">備份</span>
-                </button>
+            <!-- 右側：主題切換與工具列按鈕 -->
+            <div class="flex flex-wrap items-center justify-between sm:justify-end gap-2 w-full lg:w-auto border-t lg:border-t-0 pt-2.5 lg:pt-0 border-melody-pink/40">
+                <!-- 3大 Sanrio 主題切換器 -->
+                <div class="flex items-center bg-melody-bg/80 p-1 rounded-2xl border border-melody-pink">
+                    <button onclick="setTheme('melody')" id="themeBtn-melody" class="px-2.5 py-1.5 rounded-xl text-xs font-bold transition-all bg-melody-hot text-white shadow-sm flex items-center gap-1">
+                        🐰 <span class="hidden sm:inline">Melody</span>
+                    </button>
+                    <button onclick="setTheme('kuromi')" id="themeBtn-kuromi" class="px-2.5 py-1.5 rounded-xl text-xs font-bold transition-all text-melody-brown hover:opacity-80 flex items-center gap-1">
+                        😈 <span class="hidden sm:inline">Kuromi</span>
+                    </button>
+                    <button onclick="setTheme('twinstars')" id="themeBtn-twinstars" class="px-2.5 py-1.5 rounded-xl text-xs font-bold transition-all text-melody-brown hover:opacity-80 flex items-center gap-1">
+                        🌟 <span class="hidden sm:inline">TwinStars</span>
+                    </button>
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <button onclick="openModal()" class="hidden sm:flex candy-btn text-white font-bold px-4 py-2 rounded-2xl items-center gap-1.5 text-sm">
+                        <span>＋</span> 新增日子
+                    </button>
+                    <button onclick="openCloudModal()" class="candy-btn-secondary font-bold px-3 py-2 rounded-2xl text-xs sm:text-sm flex items-center gap-1" title="跨裝置同步與備份">
+                        <span>☁️</span> <span class="hidden md:inline">同步/備份</span>
+                    </button>
+                    <button onclick="openIosGuideModal()" class="candy-btn-secondary font-bold px-3 py-2 rounded-2xl text-xs sm:text-sm flex items-center gap-1" title="加到 iPhone / iPad 主畫面">
+                        <span>📱</span> <span class="hidden md:inline">App教學</span>
+                    </button>
+                    <button id="soundToggleBtn" onclick="toggleSound()" class="candy-btn-secondary font-bold px-3 py-2 rounded-2xl text-xs sm:text-sm" title="音效開關">
+                        <span id="soundIcon">🔊</span>
+                    </button>
+                </div>
             </div>
         </div>
     </header>
 
     <!-- 主要內容區 -->
-    <main class="relative z-10 max-w-6xl mx-auto px-4 space-y-6">
+    <main class="relative z-10 max-w-6xl mx-auto px-3 sm:px-6 space-y-5">
 
         <!-- 置頂主打倒數橫幅 (Hero Pinned Countdown) -->
-        <section id="heroBanner" class="melody-card rounded-3xl p-6 sm:p-8 relative overflow-hidden bg-gradient-to-br from-white via-melody-light to-melody-bg">
-            <!-- 裝飾角落蝴蝶結 -->
-            <div class="absolute -right-6 -bottom-6 opacity-15 pointer-events-none">
-                <svg width="180" height="180" viewBox="0 0 100 100">
-                    <circle cx="50" cy="50" r="40" fill="#FF69B4"/>
-                </svg>
-            </div>
-
-            <div id="heroContent" class="flex flex-col lg:flex-row items-center justify-between gap-6 relative z-10">
+        <section id="heroBanner" class="melody-card rounded-3xl p-5 sm:p-7 relative overflow-hidden">
+            <div id="heroContent" class="flex flex-col lg:flex-row items-center justify-between gap-5 relative z-10">
                 <!-- 由 JS 動態渲染置頂項目 -->
             </div>
         </section>
@@ -243,212 +287,558 @@
         <!-- 快速加入熱門節日與屋企人生日 (Categorized 1-Click Quick Presets) -->
         <section class="melody-card rounded-3xl p-4 sm:p-5 space-y-3">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                <h2 class="text-sm sm:text-base font-bold text-melody-dark flex items-center gap-2">
-                    <span>🍓</span> 專屬屋企人生日 & 熱門節日一鍵加入：
+                <h2 class="text-xs sm:text-sm font-bold text-melody-dark flex items-center gap-1.5">
+                    <span>🍓</span> 屋企人生日 & 熱門節日一鍵快速加入：
                 </h2>
-                <!-- 快速加入分類細 Tab -->
-                <div class="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0" id="presetFilterTabs">
+                <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1 sm:pb-0" id="presetFilterTabs">
                     <button onclick="filterQuickPresets('family')" data-pcat="family" class="preset-tab px-3 py-1 rounded-full text-xs font-bold bg-melody-hot text-white shadow-sm whitespace-nowrap transition-all">
-                        👨‍👩‍👧‍👦 屋企人生日 (5)
+                        👨‍👩‍👧‍👦 屋企人 (5)
                     </button>
-                    <button onclick="filterQuickPresets('sanrio')" data-pcat="sanrio" class="preset-tab px-3 py-1 rounded-full text-xs font-bold bg-melody-light text-melody-brown hover:bg-melody-bg border border-melody-pink whitespace-nowrap transition-all">
+                    <button onclick="filterQuickPresets('sanrio')" data-pcat="sanrio" class="preset-tab px-3 py-1 rounded-full text-xs font-bold bg-melody-light text-melody-brown border border-melody-pink whitespace-nowrap transition-all">
                         🐰 Sanrio 好友
                     </button>
-                    <button onclick="filterQuickPresets('hk')" data-pcat="hk" class="preset-tab px-3 py-1 rounded-full text-xs font-bold bg-melody-light text-melody-brown hover:bg-melody-bg border border-melody-pink whitespace-nowrap transition-all">
+                    <button onclick="filterQuickPresets('hk')" data-pcat="hk" class="preset-tab px-3 py-1 rounded-full text-xs font-bold bg-melody-light text-melody-brown border border-melody-pink whitespace-nowrap transition-all">
                         🏮 香港節日/假期
                     </button>
-                    <button onclick="filterQuickPresets('love')" data-pcat="love" class="preset-tab px-3 py-1 rounded-full text-xs font-bold bg-melody-light text-melody-brown hover:bg-melody-bg border border-melody-pink whitespace-nowrap transition-all">
+                    <button onclick="filterQuickPresets('love')" data-pcat="love" class="preset-tab px-3 py-1 rounded-full text-xs font-bold bg-melody-light text-melody-brown border border-melody-pink whitespace-nowrap transition-all">
                         💝 浪漫/雙親節
                     </button>
-                    <button onclick="filterQuickPresets('all')" data-pcat="all" class="preset-tab px-3 py-1 rounded-full text-xs font-bold bg-melody-light text-melody-brown hover:bg-melody-bg border border-melody-pink whitespace-nowrap transition-all">
-                        ✨ 全部顯示
+                    <button onclick="filterQuickPresets('all')" data-pcat="all" class="preset-tab px-3 py-1 rounded-full text-xs font-bold bg-melody-light text-melody-brown border border-melody-pink whitespace-nowrap transition-all">
+                        ✨ 全部
                     </button>
                 </div>
             </div>
-            <div class="flex items-center gap-2 overflow-x-auto pb-2" id="quickPresetsContainer">
+            <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1" id="quickPresetsContainer">
                 <!-- 由 JS 動態渲染快速加入按鈕 -->
             </div>
         </section>
 
-        <!-- 篩選、搜尋與排序控制列 -->
-        <section class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+        <!-- 視角切換 + 分類篩選 + 搜尋與排序控制列 -->
+        <section class="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
             <!-- 分類 Tabs -->
-            <div class="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0" id="categoryTabs">
-                <button onclick="setCategoryFilter('all')" data-cat="all" class="cat-tab active px-4 py-2 rounded-2xl text-xs sm:text-sm font-bold transition-all bg-melody-hot text-white shadow-sm">
+            <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1 md:pb-0" id="categoryTabs">
+                <button onclick="setCategoryFilter('all')" data-cat="all" class="cat-tab px-3.5 py-2 rounded-2xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all bg-melody-hot text-white shadow-sm">
                     ✨ 全部日子
                 </button>
-                <button onclick="setCategoryFilter('holiday')" data-cat="holiday" class="cat-tab px-3.5 py-2 rounded-2xl text-xs sm:text-sm font-bold transition-all bg-white/80 text-melody-brown hover:bg-melody-bg border border-melody-pink">
-                    🌸 節日
-                </button>
-                <button onclick="setCategoryFilter('birthday')" data-cat="birthday" class="cat-tab px-3.5 py-2 rounded-2xl text-xs sm:text-sm font-bold transition-all bg-white/80 text-melody-brown hover:bg-melody-bg border border-melody-pink">
+                <button onclick="setCategoryFilter('birthday')" data-cat="birthday" class="cat-tab px-3.5 py-2 rounded-2xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all melody-card text-melody-brown">
                     🎂 生日
                 </button>
-                <button onclick="setCategoryFilter('anniversary')" data-cat="anniversary" class="cat-tab px-3.5 py-2 rounded-2xl text-xs sm:text-sm font-bold transition-all bg-white/80 text-melody-brown hover:bg-melody-bg border border-melody-pink">
+                <button onclick="setCategoryFilter('holiday')" data-cat="holiday" class="cat-tab px-3.5 py-2 rounded-2xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all melody-card text-melody-brown">
+                    🌸 節日
+                </button>
+                <button onclick="setCategoryFilter('anniversary')" data-cat="anniversary" class="cat-tab px-3.5 py-2 rounded-2xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all melody-card text-melody-brown">
                     💖 紀念日
                 </button>
-                <button onclick="setCategoryFilter('trip')" data-cat="trip" class="cat-tab px-3.5 py-2 rounded-2xl text-xs sm:text-sm font-bold transition-all bg-white/80 text-melody-brown hover:bg-melody-bg border border-melody-pink">
+                <button onclick="setCategoryFilter('trip')" data-cat="trip" class="cat-tab px-3.5 py-2 rounded-2xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all melody-card text-melody-brown">
                     ✈️ 旅行/玩樂
                 </button>
             </div>
 
-            <!-- 搜尋與排序 -->
-            <div class="flex items-center gap-2">
-                <div class="relative flex-grow sm:flex-grow-0">
-                    <input type="text" id="searchInput" oninput="renderEvents()" placeholder="搜尋日子名稱..." 
-                        class="w-full sm:w-48 pl-9 pr-3 py-2 rounded-2xl border-2 border-melody-pink bg-white/90 text-sm focus:outline-none focus:border-melody-hot text-melody-brown placeholder-melody-softbrown/60">
-                    <span class="absolute left-3 top-2.5 text-sm">🔍</span>
+            <!-- 視角切換 (卡片 vs 12個月時間軸) + 搜尋與排序 -->
+            <div class="flex flex-wrap items-center gap-2">
+                <div class="flex items-center bg-melody-bg/90 p-1 rounded-2xl border border-melody-pink">
+                    <button onclick="setViewMode('grid')" id="viewBtn-grid" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-melody-hot text-white shadow-sm">
+                        🗂️ 卡片牆
+                    </button>
+                    <button onclick="setViewMode('calendar')" id="viewBtn-calendar" class="px-3 py-1.5 rounded-xl text-xs font-bold text-melody-brown">
+                        🗓️ 12個月時間軸
+                    </button>
                 </div>
-                <select id="sortSelect" onchange="renderEvents()" class="px-3 py-2 rounded-2xl border-2 border-melody-pink bg-white/90 text-xs sm:text-sm font-bold text-melody-brown focus:outline-none focus:border-melody-hot cursor-pointer">
+
+                <div class="relative flex-grow sm:flex-grow-0">
+                    <input type="text" id="searchInput" oninput="renderEvents()" placeholder="搜尋日子..." 
+                        class="w-full sm:w-40 pl-8 pr-3 py-1.5 rounded-2xl border-2 border-melody-pink bg-melody-light text-sm focus:outline-none focus:border-melody-hot text-melody-brown placeholder-melody-softbrown/70">
+                    <span class="absolute left-2.5 top-2 text-xs">🔍</span>
+                </div>
+
+                <select id="sortSelect" onchange="renderEvents()" class="px-3 py-1.5 rounded-2xl border-2 border-melody-pink bg-melody-light text-xs font-bold text-melody-brown focus:outline-none cursor-pointer">
                     <option value="nearest">⏳ 最快到先排</option>
-                    <option value="furthest">🗓️ 最遠日子先排</option>
-                    <option value="name">🔤 按名稱排序</option>
+                    <option value="furthest">🗓️ 最遠先排</option>
+                    <option value="name">🔤 按名稱排</option>
                 </select>
             </div>
         </section>
 
-        <!-- 倒數卡片網格清單 -->
-        <section id="eventsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <!-- 視角 1：倒數卡片網格清單 (iPad 雙欄 / 桌面三欄 / iPhone 單欄) -->
+        <section id="eventsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
             <!-- 由 JS 動態渲染卡片 -->
+        </section>
+
+        <!-- 視角 2：12個月生日與節日時間軸 (Calendar Timeline View) -->
+        <section id="calendarTimelineView" class="hidden space-y-4">
+            <div class="melody-card rounded-3xl p-4 sm:p-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4 pb-3 border-b border-melody-pink/50">
+                    <div>
+                        <h3 class="text-lg sm:text-xl font-black text-melody-dark flex items-center gap-2">
+                            <span>🗓️</span> 全年 12 個月幸福時間軸
+                        </h3>
+                        <p class="text-xs text-melody-softbrown">一眼睇晒邊個月最熱鬧（例如 5月係自己同 Dad 生日月！🎂）</p>
+                    </div>
+                </div>
+                <div id="calendarMonthsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- 由 JS 動態渲染 1~12 月 -->
+                </div>
+            </div>
         </section>
 
     </main>
 
-    <!-- 新增 / 編輯日子 Modal 彈窗 -->
-    <div id="eventModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-melody-brown/40 backdrop-blur-sm">
-        <div class="melody-card rounded-3xl max-w-md w-full p-6 relative animate-[scaleIn_0.2s_ease-out] max-h-[90vh] overflow-y-auto">
-            <div class="flex items-center justify-between mb-4 pb-3 border-b-2 border-dashed border-melody-pink">
-                <h3 id="modalTitle" class="text-xl font-black text-melody-dark flex items-center gap-2">
+    <!-- iPhone / iPad 底部懸浮導航欄 (Bottom App Tab Bar) -->
+    <nav class="fixed bottom-0 left-0 right-0 z-40 melody-card border-t-3 border-b-0 border-x-0 rounded-t-3xl bottom-nav-safe px-3 pt-2 shadow-2xl">
+        <div class="max-w-lg mx-auto flex items-center justify-around">
+            <button onclick="switchBottomTab('home')" id="bnav-home" class="flex flex-col items-center gap-0.5 py-1 px-3 rounded-2xl text-melody-hot font-bold transition-transform active:scale-90">
+                <span class="text-xl">🏠</span>
+                <span class="text-[11px]">全部倒數</span>
+            </button>
+            <button onclick="switchBottomTab('family')" id="bnav-family" class="flex flex-col items-center gap-0.5 py-1 px-3 rounded-2xl text-melody-softbrown font-bold transition-transform active:scale-90">
+                <span class="text-xl">🎂</span>
+                <span class="text-[11px]">屋企人</span>
+            </button>
+            <!-- 中央立體大「＋」按鈕 -->
+            <button onclick="openModal()" class="candy-btn text-white w-12 h-12 rounded-2xl flex items-center justify-center text-2xl font-black -mt-5 shadow-lg border-2 border-white">
+                ＋
+            </button>
+            <button onclick="switchBottomTab('calendar')" id="bnav-calendar" class="flex flex-col items-center gap-0.5 py-1 px-3 rounded-2xl text-melody-softbrown font-bold transition-transform active:scale-90">
+                <span class="text-xl">🗓️</span>
+                <span class="text-[11px]">12個月曆</span>
+            </button>
+            <button onclick="openCloudModal()" id="bnav-cloud" class="flex flex-col items-center gap-0.5 py-1 px-3 rounded-2xl text-melody-softbrown font-bold transition-transform active:scale-90">
+                <span class="text-xl">☁️</span>
+                <span class="text-[11px]">同步/備份</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- 1. 新增 / 編輯日子 Modal (支援手機 Bottom Sheet 抽屜感) -->
+    <div id="eventModal" class="fixed inset-0 z-50 hidden items-end sm:items-center justify-center sm:p-4 bg-black/50 backdrop-blur-sm">
+        <div class="melody-card rounded-t-3xl sm:rounded-3xl max-w-md w-full p-5 sm:p-6 relative max-h-[90vh] overflow-y-auto">
+            <div class="w-12 h-1.5 bg-melody-pink/60 rounded-full mx-auto mb-3 sm:hidden"></div>
+            <div class="flex items-center justify-between mb-4 pb-2.5 border-b-2 border-dashed border-melody-pink">
+                <h3 id="modalTitle" class="text-lg sm:text-xl font-black text-melody-dark flex items-center gap-2">
                     <span>🎀</span> 新增倒數好日子
                 </h3>
-                <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-melody-bg text-melody-dark font-bold flex items-center justify-center hover:bg-melody-pink hover:text-white transition-colors">
+                <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-melody-bg text-melody-dark font-bold flex items-center justify-center">
                     ✕
                 </button>
             </div>
 
-            <form id="eventForm" onsubmit="saveEvent(event)" class="space-y-4">
+            <form id="eventForm" onsubmit="saveEvent(event)" class="space-y-3.5">
                 <input type="hidden" id="eventId">
 
                 <div>
-                    <label class="block text-sm font-bold text-melody-brown mb-1">🌸 日子 / 節日名稱 *</label>
-                    <input type="text" id="eventTitle" required maxlength="40" placeholder="例如：東京之旅、男朋友生日、聖誕派對..."
-                        class="w-full px-4 py-2.5 rounded-2xl border-2 border-melody-pink focus:border-melody-hot focus:outline-none text-melody-brown font-medium bg-melody-light/40">
+                    <label class="block text-xs sm:text-sm font-bold text-melody-brown mb-1">🌸 日子 / 節日名稱 *</label>
+                    <input type="text" id="eventTitle" required maxlength="40" placeholder="例如：東京之旅、自己生日、結婚紀念日..."
+                        class="w-full px-3.5 py-2.5 rounded-2xl border-2 border-melody-pink focus:border-melody-hot focus:outline-none text-melody-brown font-medium bg-melody-light">
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div class="grid grid-cols-2 gap-2.5">
                     <div>
-                        <label class="block text-sm font-bold text-melody-brown mb-1">📅 目標日期 *</label>
+                        <label class="block text-xs sm:text-sm font-bold text-melody-brown mb-1">📅 目標日期 *</label>
                         <input type="date" id="eventDate" required
-                            class="w-full px-3.5 py-2.5 rounded-2xl border-2 border-melody-pink focus:border-melody-hot focus:outline-none text-melody-brown font-medium bg-melody-light/40">
+                            class="w-full px-3 py-2.5 rounded-2xl border-2 border-melody-pink focus:border-melody-hot focus:outline-none text-melody-brown font-medium bg-melody-light">
                     </div>
                     <div>
-                        <label class="block text-sm font-bold text-melody-brown mb-1">⏰ 時間 (選填)</label>
+                        <label class="block text-xs sm:text-sm font-bold text-melody-brown mb-1">⏰ 時間 (選填)</label>
                         <input type="time" id="eventTime" value="00:00"
-                            class="w-full px-3.5 py-2.5 rounded-2xl border-2 border-melody-pink focus:border-melody-hot focus:outline-none text-melody-brown font-medium bg-melody-light/40">
+                            class="w-full px-3 py-2.5 rounded-2xl border-2 border-melody-pink focus:border-melody-hot focus:outline-none text-melody-brown font-medium bg-melody-light">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2.5">
+                    <div>
+                        <label class="block text-xs sm:text-sm font-bold text-melody-brown mb-1">🏷️ 分類標籤</label>
+                        <select id="eventCategory" class="w-full px-3 py-2.5 rounded-2xl border-2 border-melody-pink focus:border-melody-hot focus:outline-none text-melody-brown font-bold bg-melody-light">
+                            <option value="birthday">🎂 生日派對</option>
+                            <option value="holiday">🌸 節日慶典</option>
+                            <option value="anniversary">💖 甜蜜紀念日</option>
+                            <option value="trip">✈️ 旅行 / 出遊</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs sm:text-sm font-bold text-melody-brown mb-1">🔄 計時模式</label>
+                        <select id="eventCountMode" class="w-full px-3 py-2.5 rounded-2xl border-2 border-melody-pink focus:border-melody-hot focus:outline-none text-melody-brown font-bold bg-melody-light">
+                            <option value="countdown">⏳ 倒數未來日子</option>
+                            <option value="countup">💖 正數紀念日(已過幾日)</option>
+                        </select>
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-sm font-bold text-melody-brown mb-1">🏷️ 分類標籤</label>
-                    <select id="eventCategory" class="w-full px-4 py-2.5 rounded-2xl border-2 border-melody-pink focus:border-melody-hot focus:outline-none text-melody-brown font-bold bg-melody-light/40">
-                        <option value="holiday">🌸 節日慶典 (Holiday)</option>
-                        <option value="birthday">🎂 生日派對 (Birthday)</option>
-                        <option value="anniversary">💖 甜蜜紀念日 (Anniversary)</option>
-                        <option value="trip">✈️ 旅行 / 出遊 (Trip)</option>
-                    </select>
-                </div>
-
-                <div>
-                    <label class="block text-sm font-bold text-melody-brown mb-1.5">🐰 揀個 Cute Icon</label>
+                    <label class="block text-xs sm:text-sm font-bold text-melody-brown mb-1.5">🐰 揀個 Cute Icon</label>
                     <div class="grid grid-cols-6 gap-2" id="iconPicker">
                         <button type="button" onclick="selectIcon('🐰')" data-icon="🐰" class="icon-opt p-2 text-xl rounded-xl border-2 border-melody-hot bg-melody-bg">🐰</button>
-                        <button type="button" onclick="selectIcon('🎀')" data-icon="🎀" class="icon-opt p-2 text-xl rounded-xl border-2 border-transparent bg-melody-light hover:border-melody-pink">🎀</button>
-                        <button type="button" onclick="selectIcon('🍓')" data-icon="🍓" class="icon-opt p-2 text-xl rounded-xl border-2 border-transparent bg-melody-light hover:border-melody-pink">🍓</button>
-                        <button type="button" onclick="selectIcon('🎂')" data-icon="🎂" class="icon-opt p-2 text-xl rounded-xl border-2 border-transparent bg-melody-light hover:border-melody-pink">🎂</button>
-                        <button type="button" onclick="selectIcon('💖')" data-icon="💖" class="icon-opt p-2 text-xl rounded-xl border-2 border-transparent bg-melody-light hover:border-melody-pink">💖</button>
-                        <button type="button" onclick="selectIcon('🌸')" data-icon="🌸" class="icon-opt p-2 text-xl rounded-xl border-2 border-transparent bg-melody-light hover:border-melody-pink">🌸</button>
-                        <button type="button" onclick="selectIcon('🎄')" data-icon="🎄" class="icon-opt p-2 text-xl rounded-xl border-2 border-transparent bg-melody-light hover:border-melody-pink">🎄</button>
-                        <button type="button" onclick="selectIcon('✈️')" data-icon="✈️" class="icon-opt p-2 text-xl rounded-xl border-2 border-transparent bg-melody-light hover:border-melody-pink">✈️</button>
-                        <button type="button" onclick="selectIcon('🍰')" data-icon="🍰" class="icon-opt p-2 text-xl rounded-xl border-2 border-transparent bg-melody-light hover:border-melody-pink">🍰</button>
-                        <button type="button" onclick="selectIcon('🎆')" data-icon="🎆" class="icon-opt p-2 text-xl rounded-xl border-2 border-transparent bg-melody-light hover:border-melody-pink">🎆</button>
-                        <button type="button" onclick="selectIcon('🎁')" data-icon="🎁" class="icon-opt p-2 text-xl rounded-xl border-2 border-transparent bg-melody-light hover:border-melody-pink">🎁</button>
-                        <button type="button" onclick="selectIcon('✨')" data-icon="✨" class="icon-opt p-2 text-xl rounded-xl border-2 border-transparent bg-melody-light hover:border-melody-pink">✨</button>
+                        <button type="button" onclick="selectIcon('🎀')" data-icon="🎀" class="icon-opt p-2 text-xl rounded-xl border-2 border-transparent bg-melody-light">🎀</button>
+                        <button type="button" onclick="selectIcon('🍓')" data-icon="🍓" class="icon-opt p-2 text-xl rounded-xl border-2 border-transparent bg-melody-light">🍓</button>
+                        <button type="button" onclick="selectIcon('🎂')" data-icon="🎂" class="icon-opt p-2 text-xl rounded-xl border-2 border-transparent bg-melody-light">🎂</button>
+                        <button type="button" onclick="selectIcon('💖')" data-icon="💖" class="icon-opt p-2 text-xl rounded-xl border-2 border-transparent bg-melody-light">💖</button>
+                        <button type="button" onclick="selectIcon('🌸')" data-icon="🌸" class="icon-opt p-2 text-xl rounded-xl border-2 border-transparent bg-melody-light">🌸</button>
+                        <button type="button" onclick="selectIcon('🎄')" data-icon="🎄" class="icon-opt p-2 text-xl rounded-xl border-2 border-transparent bg-melody-light">🎄</button>
+                        <button type="button" onclick="selectIcon('✈️')" data-icon="✈️" class="icon-opt p-2 text-xl rounded-xl border-2 border-transparent bg-melody-light">✈️</button>
+                        <button type="button" onclick="selectIcon('🍰')" data-icon="🍰" class="icon-opt p-2 text-xl rounded-xl border-2 border-transparent bg-melody-light">🍰</button>
+                        <button type="button" onclick="selectIcon('🎆')" data-icon="🎆" class="icon-opt p-2 text-xl rounded-xl border-2 border-transparent bg-melody-light">🎆</button>
+                        <button type="button" onclick="selectIcon('🎁')" data-icon="🎁" class="icon-opt p-2 text-xl rounded-xl border-2 border-transparent bg-melody-light">🎁</button>
+                        <button type="button" onclick="selectIcon('😈')" data-icon="😈" class="icon-opt p-2 text-xl rounded-xl border-2 border-transparent bg-melody-light">😈</button>
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-sm font-bold text-melody-brown mb-1">📝 小備註 / 願望清單 (選填)</label>
-                    <input type="text" id="eventNote" maxlength="60" placeholder="例如：記得訂蛋糕、準備禮物..."
-                        class="w-full px-4 py-2 rounded-2xl border-2 border-melody-pink focus:border-melody-hot focus:outline-none text-sm text-melody-brown bg-melody-light/40">
+                    <label class="block text-xs sm:text-sm font-bold text-melody-brown mb-1">📝 小備註 / 禮物 Idea (選填)</label>
+                    <input type="text" id="eventNote" maxlength="60" placeholder="例如：記得訂士多啤梨蛋糕、買禮物..."
+                        class="w-full px-3.5 py-2 rounded-2xl border-2 border-melody-pink focus:border-melody-hot focus:outline-none text-melody-brown bg-melody-light">
                 </div>
 
                 <!-- 實用開關選項 -->
-                <div class="space-y-2 pt-1">
-                    <label class="flex items-center gap-2.5 cursor-pointer select-none p-2.5 rounded-2xl bg-melody-light/60 border border-melody-pink/60">
-                        <input type="checkbox" id="eventRepeat" class="w-4 h-4 accent-melody-hot rounded">
-                        <span class="text-sm font-bold text-melody-brown">🔁 每年自動重複 (適合生日/固定節日)</span>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+                    <label class="flex items-center gap-2 cursor-pointer select-none p-2.5 rounded-2xl bg-melody-light border border-melody-pink">
+                        <input type="checkbox" id="eventRepeat" class="w-4 h-4 accent-pink-500 rounded">
+                        <span class="text-xs font-bold text-melody-brown">🔁 每年自動重複</span>
                     </label>
-                    <label class="flex items-center gap-2.5 cursor-pointer select-none p-2.5 rounded-2xl bg-melody-light/60 border border-melody-pink/60">
-                        <input type="checkbox" id="eventPinned" class="w-4 h-4 accent-melody-hot rounded">
-                        <span class="text-sm font-bold text-melody-brown">📌 釘選喺最頂部大橫幅顯示</span>
+                    <label class="flex items-center gap-2 cursor-pointer select-none p-2.5 rounded-2xl bg-melody-light border border-melody-pink">
+                        <input type="checkbox" id="eventPinned" class="w-4 h-4 accent-pink-500 rounded">
+                        <span class="text-xs font-bold text-melody-brown">📌 釘選喺最頂大橫幅</span>
                     </label>
                 </div>
 
-                <div class="flex items-center gap-3 pt-3">
-                    <button type="button" onclick="closeModal()" class="w-1/3 candy-btn-secondary py-2.5 rounded-2xl font-bold text-melody-brown">
+                <div class="flex items-center gap-3 pt-2">
+                    <button type="button" onclick="closeModal()" class="w-1/3 candy-btn-secondary py-2.5 rounded-2xl font-bold">
                         取消
                     </button>
                     <button type="submit" class="w-2/3 candy-btn text-white py-2.5 rounded-2xl font-bold">
-                        💖 儲存倒數日子
+                        💖 儲存日子
                     </button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- 備份與匯入 Modal -->
-    <div id="backupModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-melody-brown/40 backdrop-blur-sm">
-        <div class="melody-card rounded-3xl max-w-md w-full p-6 relative">
-            <div class="flex items-center justify-between mb-4 pb-3 border-b-2 border-dashed border-melody-pink">
-                <h3 class="text-xl font-black text-melody-dark flex items-center gap-2">
-                    <span>💾</span> 備份與還原日子資料
-                </h3>
-                <button onclick="closeBackupModal()" class="w-8 h-8 rounded-full bg-melody-bg text-melody-dark font-bold flex items-center justify-center hover:bg-melody-pink hover:text-white">
+    <!-- 2. 🎁 禮物與慶祝準備 Checklist Modal -->
+    <div id="checklistModal" class="fixed inset-0 z-50 hidden items-end sm:items-center justify-center sm:p-4 bg-black/50 backdrop-blur-sm">
+        <div class="melody-card rounded-t-3xl sm:rounded-3xl max-w-md w-full p-5 sm:p-6 relative max-h-[85vh] flex flex-col">
+            <div class="flex items-center justify-between mb-3 pb-2.5 border-b-2 border-dashed border-melody-pink">
+                <div>
+                    <h3 id="checklistModalTitle" class="text-lg font-black text-melody-dark flex items-center gap-1.5">
+                        🎁 生日禮物 & 慶祝清單
+                    </h3>
+                    <p class="text-xs text-melody-softbrown">提早準備好蛋糕、禮物同訂位，唔怕臨急抱佛腳！</p>
+                </div>
+                <button onclick="closeChecklistModal()" class="w-8 h-8 rounded-full bg-melody-bg text-melody-dark font-bold flex items-center justify-center">
                     ✕
                 </button>
             </div>
-            <p class="text-xs text-melody-softbrown mb-3">
-                你嘅倒數日子已經自動儲存在呢個瀏覽器入面。如果你想換手機/電腦，可以複製下面嘅備份碼，或者匯入之前嘅資料：
-            </p>
-            <textarea id="backupJsonArea" rows="4" class="w-full p-3 rounded-2xl border-2 border-melody-pink text-xs font-mono text-melody-brown bg-melody-light/40 focus:outline-none mb-3"></textarea>
-            <div class="flex flex-wrap gap-2">
-                <button onclick="copyBackupData()" class="flex-1 candy-btn text-white py-2 rounded-2xl text-sm font-bold">
-                    📋 複製備份碼
+
+            <div id="checklistItemsContainer" class="space-y-2 overflow-y-auto flex-1 py-2 pr-1">
+                <!-- 由 JS 動態渲染 Checklist 項目 -->
+            </div>
+
+            <form onsubmit="addChecklistItem(event)" class="mt-3 pt-3 border-t border-melody-pink/50 flex gap-2">
+                <input type="text" id="newChecklistInput" required maxlength="40" placeholder="新增準備事項 (例如：買氣球、寫生日卡)..."
+                    class="flex-1 px-3.5 py-2 rounded-2xl border-2 border-melody-pink bg-melody-light text-melody-brown focus:outline-none">
+                <button type="submit" class="candy-btn text-white px-4 py-2 rounded-2xl font-bold text-sm whitespace-nowrap">
+                    ＋ 加入
                 </button>
-                <button onclick="importBackupData()" class="flex-1 candy-btn-secondary text-melody-dark py-2 rounded-2xl text-sm font-bold">
-                    📥 匯入並覆蓋
+            </form>
+        </div>
+    </div>
+
+    <!-- 3. 📸 IG Story / WhatsApp 靚靚分享海報卡產生器 Modal -->
+    <div id="posterModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+        <div class="melody-card rounded-3xl max-w-sm w-full p-5 relative flex flex-col items-center">
+            <div class="w-full flex items-center justify-between mb-3">
+                <h3 class="text-base font-black text-melody-dark">📸 專屬 IG Story 倒數分享卡</h3>
+                <button onclick="closePosterModal()" class="w-8 h-8 rounded-full bg-melody-bg text-melody-dark font-bold flex items-center justify-center">✕</button>
+            </div>
+
+            <!-- Canvas 海報預覽 -->
+            <div class="w-full flex justify-center bg-melody-light p-2 rounded-2xl border border-melody-pink mb-3">
+                <canvas id="posterCanvas" width="540" height="960" class="w-56 sm:w-64 h-auto rounded-xl shadow-md"></canvas>
+            </div>
+
+            <div class="flex gap-2 w-full">
+                <button onclick="downloadPosterImage()" class="flex-1 candy-btn text-white py-2.5 rounded-2xl font-bold text-sm flex items-center justify-center gap-1.5">
+                    📥 儲存高清海報相片
                 </button>
-                <button onclick="resetToDefaults()" class="w-full mt-1 text-xs text-melody-softbrown underline hover:text-melody-dark py-1">
-                    還原做預設節日清單
+                <button onclick="shareWhatsAppGreeting()" class="candy-btn-secondary px-4 py-2.5 rounded-2xl font-bold text-sm flex items-center justify-center gap-1" title="複製祝賀語傳送到 WhatsApp">
+                    💬 WhatsApp
                 </button>
             </div>
+        </div>
+    </div>
+
+    <!-- 4. ☁️ 跨裝置雲端同步 (iPhone ⇄ iPad) & 備份 Modal -->
+    <div id="cloudModal" class="fixed inset-0 z-50 hidden items-end sm:items-center justify-center sm:p-4 bg-black/50 backdrop-blur-sm">
+        <div class="melody-card rounded-t-3xl sm:rounded-3xl max-w-md w-full p-5 sm:p-6 relative max-h-[90vh] overflow-y-auto space-y-4">
+            <div class="flex items-center justify-between pb-2.5 border-b-2 border-dashed border-melody-pink">
+                <h3 class="text-lg font-black text-melody-dark flex items-center gap-2">
+                    <span>☁️</span> iPhone ⇄ iPad 雲端同步與備份
+                </h3>
+                <button onclick="closeCloudModal()" class="w-8 h-8 rounded-full bg-melody-bg text-melody-dark font-bold flex items-center justify-center">✕</button>
+            </div>
+
+            <!-- 家庭雲端同步房間碼 -->
+            <div class="p-3.5 rounded-2xl bg-melody-light border-2 border-melody-pink space-y-2.5">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-black text-melody-dark">🔗 跨裝置即時雲端同步碼</span>
+                    <span id="syncRoomStatus" class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-pink-100 text-pink-700">未連結同步碼</span>
+                </div>
+                <p class="text-xs text-melody-softbrown leading-relaxed">
+                    喺你部 **iPhone** 同 **iPad** 輸入同一個自訂密碼（例如：<code class="font-bold text-melody-dark">taurus-514</code>），兩部機嘅倒數日子同禮物清單就會自動雲端即時同步！
+                </p>
+                <div class="flex gap-2">
+                    <input type="text" id="syncRoomInput" maxlength="30" placeholder="輸入專屬同步碼 (如: melody-514)"
+                        class="flex-1 px-3 py-2 rounded-xl border-2 border-melody-pink bg-white text-gray-800 font-bold focus:outline-none">
+                    <button onclick="connectCloudSyncRoom()" class="candy-btn text-white px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap">
+                        ☁️ 連結同步
+                    </button>
+                </div>
+            </div>
+
+            <!-- 傳統 JSON 備份碼 -->
+            <div class="space-y-2 pt-1">
+                <label class="block text-xs font-bold text-melody-brown">💾 手動複製備份碼 / 還原資料：</label>
+                <textarea id="backupJsonArea" rows="3" class="w-full p-2.5 rounded-2xl border-2 border-melody-pink text-xs font-mono text-melody-brown bg-melody-light focus:outline-none"></textarea>
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="copyBackupData()" class="flex-1 candy-btn-secondary py-2 rounded-xl text-xs font-bold">
+                        📋 複製備份碼
+                    </button>
+                    <button onclick="importBackupData()" class="flex-1 candy-btn-secondary py-2 rounded-xl text-xs font-bold">
+                        📥 貼上並還原
+                    </button>
+                    <button onclick="resetToDefaults()" class="w-full text-center text-xs text-melody-softbrown underline py-1">
+                        還原預設屋企人生日與節日清單
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. 📱 iPhone / iPad 加到主畫面教學 Modal -->
+    <div id="iosGuideModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+        <div class="melody-card rounded-3xl max-w-sm w-full p-6 relative text-center space-y-4">
+            <div class="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-pink-400 to-rose-500 p-2 shadow-lg border-2 border-white flex items-center justify-center text-3xl">
+                🐰
+            </div>
+            <h3 class="text-lg font-black text-melody-dark">變身 iPhone / iPad 真 App！✨</h3>
+            <div class="text-left text-xs sm:text-sm space-y-2.5 bg-melody-light p-4 rounded-2xl border border-melody-pink text-melody-brown">
+                <p>1️⃣ 用 **Safari** 打開呢個網頁</p>
+                <p>2️⃣ 撳螢幕底部或右上角嘅 **「分享」按鈕** <span class="inline-block px-1.5 py-0.5 bg-white rounded border text-xs font-bold">⬆️</span></p>
+                <p>3️⃣ 向下滑揀 **「加至主畫面 (Add to Home Screen)」** ➕</p>
+                <p>4️⃣ 桌面就會出現 **My Melody 專屬 Icon**，打開係 100% 全螢幕無網址列！🎀</p>
+            </div>
+            <button onclick="closeIosGuideModal()" class="w-full candy-btn text-white py-2.5 rounded-2xl font-bold text-sm">
+                知道啦～超方便！💖
+            </button>
         </div>
     </div>
 
     <!-- 自訂可愛提示框 (Toast Message) -->
-    <div id="toastBox" class="fixed bottom-6 right-6 z-50 transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none">
-        <div class="melody-card px-5 py-3 rounded-2xl flex items-center gap-3 bg-white border-2 border-melody-hot shadow-lg">
-            <span id="toastIcon" class="text-2xl">🎀</span>
-            <span id="toastText" class="text-sm font-bold text-melody-dark">提示訊息</span>
+    <div id="toastBox" class="fixed bottom-24 right-4 sm:right-6 z-50 transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none">
+        <div class="melody-card px-4 py-2.5 rounded-2xl flex items-center gap-2.5 shadow-xl">
+            <span id="toastIcon" class="text-xl">🎀</span>
+            <span id="toastText" class="text-xs sm:text-sm font-bold text-melody-dark">提示訊息</span>
         </div>
     </div>
 
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        let db = null;
+        let auth = null;
+        let currentUser = null;
+        let unsubscribeRoom = null;
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'melody-countdown-app';
+
+        async function initCloudSync() {
+            try {
+                if (typeof __firebase_config === 'undefined' || !__firebase_config) return;
+                const firebaseConfig = JSON.parse(__firebase_config);
+                const app = initializeApp(firebaseConfig);
+                auth = getAuth(app);
+                db = getFirestore(app);
+
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+
+                onAuthStateChanged(auth, (user) => {
+                    currentUser = user;
+                    const savedRoom = localStorage.getItem('melody_sync_room_code');
+                    if (user && savedRoom) {
+                        window.subscribeToSyncRoom(savedRoom, false);
+                    }
+                });
+            } catch (e) {
+                console.warn('Cloud sync unavailable in local preview:', e);
+            }
+        }
+
+        window.subscribeToSyncRoom = function(roomCode, notifyUser = true) {
+            if (!db || !currentUser || !roomCode) return;
+            const cleanCode = roomCode.trim().toLowerCase().replace(/[^a-z0-9_-]/g, '');
+            if (!cleanCode) return;
+
+            localStorage.setItem('melody_sync_room_code', cleanCode);
+            const roomInput = document.getElementById('syncRoomInput');
+            if (roomInput) roomInput.value = cleanCode;
+
+            if (unsubscribeRoom) unsubscribeRoom();
+
+            const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'melody_sync_rooms', cleanCode);
+            unsubscribeRoom = onSnapshot(docRef, (snap) => {
+                if (snap.exists()) {
+                    const data = snap.data();
+                    if (data && data.eventsJson) {
+                        try {
+                            const remoteEvents = JSON.parse(data.eventsJson);
+                            if (Array.isArray(remoteEvents)) {
+                                window.applyRemoteEvents(remoteEvents);
+                            }
+                        } catch (err) {}
+                    }
+                } else {
+                    // 第一次建立房間，將現有資料推上雲端
+                    window.pushEventsToCloud();
+                }
+                const badge = document.getElementById('cloudStatusBadge');
+                const roomStatus = document.getElementById('syncRoomStatus');
+                if (badge) {
+                    badge.innerHTML = `☁️ 已同步: ${cleanCode}`;
+                    badge.className = 'cursor-pointer inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-pink-100 text-pink-700 text-[11px] font-bold border border-pink-300';
+                }
+                if (roomStatus) {
+                    roomStatus.textContent = `已連結: ${cleanCode}`;
+                }
+            }, (err) => {
+                console.warn('Sync listener error:', err);
+            });
+
+            if (notifyUser) {
+                window.showToast(`已連結雲端同步碼「${cleanCode}」！☁️`, '✨');
+            }
+        };
+
+        window.pushEventsToCloud = async function() {
+            const roomCode = localStorage.getItem('melody_sync_room_code');
+            if (!db || !currentUser || !roomCode) return;
+            try {
+                const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'melody_sync_rooms', roomCode);
+                await setDoc(docRef, {
+                    eventsJson: JSON.stringify(window.getEventsState()),
+                    updatedAt: new Date().toISOString(),
+                    updatedBy: currentUser.uid
+                }, { merge: true });
+            } catch (e) {
+                console.warn('Push cloud error:', e);
+            }
+        };
+
+        initCloudSync();
+    </script>
+
     <script>
-        // --- 狀態與預設資料 ---
         const STORAGE_KEY = 'melody_countdown_events_v1';
+        const THEME_KEY = 'melody_theme_v1';
         let currentCategory = 'all';
+        let currentViewMode = 'grid'; // 'grid' | 'calendar'
         let selectedIcon = '🐰';
         let soundEnabled = true;
         let synth = null;
+        let activeChecklistEventId = null;
+        let activePosterEventId = null;
+
+        // 三款 Sanrio 主角手繪級 SVG
+        const SANRIO_MASCOTS = {
+            melody: `
+                <svg viewBox="0 0 200 200" class="w-full h-full drop-shadow-md">
+                    <path d="M55 95 C 40 30, 65 10, 85 20 C 100 30, 95 75, 92 90 Z" fill="#FF69B4" stroke="#6D4C53" stroke-width="5" stroke-linejoin="round"/>
+                    <path d="M108 90 C 110 60, 125 15, 148 25 C 168 35, 155 85, 145 98 Z" fill="#FF69B4" stroke="#6D4C53" stroke-width="5" stroke-linejoin="round"/>
+                    <ellipse cx="100" cy="128" rx="64" ry="52" fill="#FF69B4" stroke="#6D4C53" stroke-width="5"/>
+                    <ellipse cx="100" cy="136" rx="46" ry="36" fill="#FFFFFF" stroke="#6D4C53" stroke-width="4"/>
+                    <path d="M92 98 Q100 108 108 98" fill="#FF69B4" stroke="#6D4C53" stroke-width="4" stroke-linecap="round"/>
+                    <g transform="translate(132, 85) rotate(15)">
+                        <circle cx="0" cy="-12" r="9" fill="#FFFFFF" stroke="#6D4C53" stroke-width="3.5"/>
+                        <circle cx="11" cy="-4" r="9" fill="#FFFFFF" stroke="#6D4C53" stroke-width="3.5"/>
+                        <circle cx="7" cy="10" r="9" fill="#FFFFFF" stroke="#6D4C53" stroke-width="3.5"/>
+                        <circle cx="-7" cy="10" r="9" fill="#FFFFFF" stroke="#6D4C53" stroke-width="3.5"/>
+                        <circle cx="-11" cy="-4" r="9" fill="#FFFFFF" stroke="#6D4C53" stroke-width="3.5"/>
+                        <circle cx="0" cy="0" r="7" fill="#FFDF5B" stroke="#6D4C53" stroke-width="3.5"/>
+                    </g>
+                    <ellipse cx="75" cy="136" rx="4.5" ry="6.5" fill="#6D4C53"/>
+                    <circle cx="73.5" cy="134" r="1.5" fill="#FFFFFF"/>
+                    <ellipse cx="125" cy="136" rx="4.5" ry="6.5" fill="#6D4C53"/>
+                    <circle cx="123.5" cy="134" r="1.5" fill="#FFFFFF"/>
+                    <ellipse cx="100" cy="142" rx="5.5" ry="4" fill="#FFDF5B" stroke="#6D4C53" stroke-width="3.5"/>
+                    <ellipse cx="64" cy="144" rx="7" ry="4" fill="#FFB6C1" opacity="0.8"/>
+                    <ellipse cx="136" cy="144" rx="7" ry="4" fill="#FFB6C1" opacity="0.8"/>
+                </svg>
+            `,
+            kuromi: `
+                <svg viewBox="0 0 200 200" class="w-full h-full drop-shadow-md">
+                    <!-- Kuromi 惡魔尖耳仔 -->
+                    <path d="M52 98 L 32 22 L 88 76 Z" fill="#2D2042" stroke="#F3E8FF" stroke-width="4" stroke-linejoin="round"/>
+                    <path d="M148 98 L 168 22 L 112 76 Z" fill="#2D2042" stroke="#F3E8FF" stroke-width="4" stroke-linejoin="round"/>
+                    <circle cx="32" cy="22" r="7" fill="#C084FC"/>
+                    <circle cx="168" cy="22" r="7" fill="#C084FC"/>
+                    <!-- 頭巾主體 -->
+                    <ellipse cx="100" cy="128" rx="64" ry="52" fill="#2D2042" stroke="#F3E8FF" stroke-width="4"/>
+                    <!-- 白色臉蛋 -->
+                    <ellipse cx="100" cy="138" rx="45" ry="34" fill="#FFFFFF" stroke="#2D2042" stroke-width="4"/>
+                    <!-- 額頭 V 字與粉紅骷髏頭 -->
+                    <path d="M75 95 L100 115 L125 95" fill="#2D2042"/>
+                    <ellipse cx="100" cy="96" rx="12" ry="10" fill="#FF85C0" stroke="#2D2042" stroke-width="2.5"/>
+                    <circle cx="95" cy="96" r="2.5" fill="#2D2042"/>
+                    <circle cx="105" cy="96" r="2.5" fill="#2D2042"/>
+                    <!-- 俏皮眼神 -->
+                    <ellipse cx="76" cy="136" rx="4.5" ry="6.5" fill="#2D2042"/>
+                    <ellipse cx="124" cy="136" rx="4.5" ry="6.5" fill="#2D2042"/>
+                    <ellipse cx="100" cy="143" rx="5" ry="3.5" fill="#FF85C0"/>
+                    <ellipse cx="64" cy="144" rx="7" ry="4" fill="#E9D5FF" opacity="0.9"/>
+                    <ellipse cx="136" cy="144" rx="7" ry="4" fill="#E9D5FF" opacity="0.9"/>
+                </svg>
+            `,
+            twinstars: `
+                <svg viewBox="0 0 200 200" class="w-full h-full drop-shadow-md">
+                    <!-- 夢幻金黃大星星 -->
+                    <polygon points="100,18 123,68 178,75 137,113 148,168 100,140 52,168 63,113 22,75 77,68" fill="#FFF3BF" stroke="#5C7CFA" stroke-width="4" stroke-linejoin="round"/>
+                    <!-- 雙子星粉藍粉紅光暈 -->
+                    <circle cx="72" cy="115" r="22" fill="#A5D8FF" opacity="0.5"/>
+                    <circle cx="128" cy="115" r="22" fill="#FFD6E8" opacity="0.6"/>
+                    <!-- 可愛笑眼 -->
+                    <circle cx="80" cy="100" r="4.5" fill="#3B4D6B"/>
+                    <circle cx="120" cy="100" r="4.5" fill="#3B4D6B"/>
+                    <path d="M93 110 Q100 117 107 110" fill="none" stroke="#FF85C0" stroke-width="4" stroke-linecap="round"/>
+                    <ellipse cx="70" cy="108" rx="6" ry="3.5" fill="#FF85C0" opacity="0.6"/>
+                    <ellipse cx="130" cy="108" rx="6" ry="3.5" fill="#FF85C0" opacity="0.6"/>
+                </svg>
+            `
+        };
+
+        // 動態產生 iOS Home Screen Icon (Canvas to DataURL)
+        function setupAppleTouchIcon() {
+            try {
+                const c = document.createElement('canvas');
+                c.width = 180;
+                c.height = 180;
+                const ctx = c.getContext('2d');
+                ctx.fillStyle = '#FFE4EE';
+                ctx.fillRect(0, 0, 180, 180);
+                ctx.fillStyle = '#FF69B4';
+                ctx.beginPath();
+                ctx.arc(90, 90, 72, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.font = '85px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('🐰', 90, 96);
+                const link = document.createElement('link');
+                link.rel = 'apple-touch-icon';
+                link.href = c.toDataURL('image/png');
+                document.head.appendChild(link);
+            } catch (e) {}
+        }
 
         // 計算下一個指定月日嘅年份字串 (YYYY-MM-DD)
         function getNextOccurrenceDateString(monthDay) {
@@ -464,18 +854,18 @@
             return `${yyyy}-${mm}-${dd}`;
         }
 
-        // 完整快速加入資料庫 (包含屋企人生日、Sanrio、香港節日、浪漫與雙親節)
+        // 完整快速加入資料庫 (包含屋企人生日 5月14日 修正版)
         const QUICK_PRESETS_CATALOG = [
             // 屋企人生日 (Family)
-            { title: '自己 (金牛雞翼) 生日 🍗🎂', date: '05-24', category: 'birthday', icon: '🎂', isYearly: true, pcat: 'family', note: '祝自己生日快樂！買份大禮物獎勵自己 ✨🍗' },
-            { title: 'Dad 生日 👨🏻🎂', date: '05-26', category: 'birthday', icon: '🎁', isYearly: true, pcat: 'family', note: '同自己生日差兩日！記得訂檯同爸爸食好西慶祝 🍽️' },
+            { title: '自己 (金牛雞翼) 生日 🍗🎂', date: '05-14', category: 'birthday', icon: '🎂', isYearly: true, pcat: 'family', note: '5月14日正宗金牛座！祝自己生日快樂，買份大禮物同食雞翼獎勵自己 ✨🍗' },
+            { title: 'Dad 生日 👨🏻🎂', date: '05-26', category: 'birthday', icon: '🎁', isYearly: true, pcat: 'family', note: '同自己一樣係5月壽星！記得訂檯同爸爸食好西慶祝 🍽️' },
             { title: 'Mum 生日 👩🏻💐', date: '06-29', category: 'birthday', icon: '🌸', isYearly: true, pcat: 'family', note: '準備靚靚生日蛋糕同禮物送比媽咪 💖🎂' },
             { title: '阿哥生日 👦🏻🎂', date: '07-20', category: 'birthday', icon: '🍰', isYearly: true, pcat: 'family', note: '同阿哥慶祝生日，食餐好嘅！🎉' },
             { title: '細妹 (處女嘉研) 生日 👧🏻🎀', date: '09-22', category: 'birthday', icon: '🎀', isYearly: true, pcat: 'family', note: '處女座細妹嘉研生日大快樂！準備禮物同蛋糕 🍓' },
 
             // Sanrio 好友生日
             { title: 'My Melody 生日 🐰', date: '01-18', category: 'birthday', icon: '🐰', isYearly: true, pcat: 'sanrio', note: '準備杏仁磅蛋糕同士多啤梨慶祝！🍓' },
-            { title: 'Kuromi 生日 😈💜', date: '10-31', category: 'birthday', icon: '🎀', isYearly: true, pcat: 'sanrio', note: 'Melody 最好嘅拍檔 Kuromi 生日兼萬聖節！' },
+            { title: 'Kuromi 生日 😈💜', date: '10-31', category: 'birthday', icon: '😈', isYearly: true, pcat: 'sanrio', note: 'Melody 最好嘅拍檔 Kuromi 生日兼萬聖節！' },
             { title: 'My Sweet Piano 生日 🐑', date: '07-06', category: 'birthday', icon: '🌸', isYearly: true, pcat: 'sanrio', note: '溫柔粉紅小綿羊閨蜜生日！' },
             { title: 'Cinnamoroll 玉桂狗生日 🐶', date: '03-06', category: 'birthday', icon: '🍰', isYearly: true, pcat: 'sanrio', note: '食肉桂卷慶祝玉桂狗生日 ☁️' },
             { title: 'Hello Kitty 生日 🍎', date: '11-01', category: 'birthday', icon: '🎀', isYearly: true, pcat: 'sanrio', note: '五個蘋果咁高嘅 Kitty 大日子 🍎' },
@@ -485,7 +875,7 @@
             { title: '平安夜 🎅', date: '12-24', category: 'holiday', icon: '🎁', isYearly: true, pcat: 'hk', note: '食聖誕大餐報佳音 🔔' },
             { title: '元旦跨年倒數 🎆', date: '01-01', category: 'holiday', icon: '🎆', isYearly: true, pcat: 'hk', note: '3、2、1 Happy New Year! 新一年開開心心！' },
             { title: '農曆新年大年初一 🧧', date: '2027-02-06', category: 'holiday', icon: '🌸', isYearly: false, pcat: 'hk', note: '逗利是、食蘿蔔糕年糕、行年宵花市 🧧' },
-            { title: '中秋節賞月 🥮', date: '09-25', category: 'holiday', icon: '✨', isYearly: false, pcat: 'hk', note: '食奶黃月餅、玩燈籠、同屋企人團圓賞月 🌕' },
+            { title: '中秋節賞月 🥮', date: '09-25', category: 'holiday', icon: '✨', isYearly: true, pcat: 'hk', note: '食奶黃月餅、玩燈籠、同屋企人團圓賞月 🌕' },
             { title: '復活節長假期 🐣', date: '2027-03-26', category: 'holiday', icon: '🐰', isYearly: false, pcat: 'hk', note: '放連假去玩或者去 Staycation 抖下！' },
             { title: '端午節 🍙', date: '2027-06-09', category: 'holiday', icon: '🍓', isYearly: false, pcat: 'hk', note: '食糭同埋睇龍舟比賽 🐉' },
 
@@ -498,41 +888,20 @@
             { title: '雙11 購物狂歡節 🛍️', date: '11-11', category: 'holiday', icon: '✨', isYearly: true, pcat: 'love', note: '清空購物車買心頭好！🛒' }
         ];
 
-        let currentPresetCat = 'family';
-
-        function filterQuickPresets(pcat) {
-            playCuteSound('pop');
-            currentPresetCat = pcat;
-            document.querySelectorAll('.preset-tab').forEach(btn => {
-                if (btn.dataset.pcat === pcat) {
-                    btn.className = 'preset-tab px-3 py-1 rounded-full text-xs font-bold bg-melody-hot text-white shadow-sm whitespace-nowrap transition-all';
-                } else {
-                    btn.className = 'preset-tab px-3 py-1 rounded-full text-xs font-bold bg-melody-light text-melody-brown hover:bg-melody-bg border border-melody-pink whitespace-nowrap transition-all';
-                }
-            });
-            renderQuickPresetButtons();
-        }
-
-        function renderQuickPresetButtons() {
-            const container = document.getElementById('quickPresetsContainer');
-            if (!container) return;
-            const list = currentPresetCat === 'all' 
-                ? QUICK_PRESETS_CATALOG 
-                : QUICK_PRESETS_CATALOG.filter(item => item.pcat === currentPresetCat);
-
-            container.innerHTML = list.map((item, idx) => {
-                const dateLabel = item.date.length === 5 ? item.date.replace('-', '月') + '日' : item.date;
-                const safeTitle = item.title.replace(/'/g, "\\'");
-                const safeNote = (item.note || '').replace(/'/g, "\\'");
-                return `
-                    <button onclick="addQuickPreset('${safeTitle}', '${item.date}', '${item.category}', '${item.icon}', ${item.isYearly}, '${safeNote}')" 
-                        class="candy-btn-secondary whitespace-nowrap px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-bold text-melody-brown hover:text-melody-dark flex items-center gap-1.5 flex-shrink-0">
-                        <span>${item.icon}</span>
-                        <span>${item.title}</span>
-                        <span class="text-[11px] text-melody-softbrown font-normal">(${dateLabel})</span>
-                    </button>
-                `;
-            }).join('');
+        // 預設生日準備清單項目
+        function getDefaultChecklist(cat) {
+            if (cat === 'birthday') {
+                return [
+                    { id: 'c1', text: '揀定同買生日禮物 🎁', done: false },
+                    { id: 'c2', text: '預訂靚靚生日蛋糕 🎂', done: false },
+                    { id: 'c3', text: 'Book 餐廳同屋企人食飯慶祝 🍽️', done: false },
+                    { id: 'c4', text: '準備生日卡寫祝福語 💌', done: false }
+                ];
+            }
+            return [
+                { id: 'c1', text: '提早夾定時間同行程 🗓️', done: false },
+                { id: 'c2', text: '準備節日小禮物 / 驚喜 ✨', done: false }
+            ];
         }
 
         // 預設可愛節日與屋企人生日清單
@@ -542,13 +911,15 @@
                 {
                     id: 'evt_self_bday',
                     title: '自己 (金牛雞翼) 生日 🍗🎂',
-                    date: getNextOccurrenceDateString('05-24'),
+                    date: getNextOccurrenceDateString('05-14'),
                     time: '00:00',
                     category: 'birthday',
+                    countMode: 'countdown',
                     icon: '🎂',
-                    note: '祝自己生日快樂！買份大禮物同食雞翼獎勵自己 ✨🍗',
+                    note: '5月14日正宗金牛座！祝自己生日快樂，買份大禮物同食雞翼獎勵自己 ✨🍗',
                     repeatYearly: true,
                     pinned: true,
+                    checklist: getDefaultChecklist('birthday'),
                     createdAt: nowIso
                 },
                 {
@@ -557,10 +928,12 @@
                     date: getNextOccurrenceDateString('05-26'),
                     time: '00:00',
                     category: 'birthday',
+                    countMode: 'countdown',
                     icon: '🎁',
-                    note: '同自己生日只係差兩日！記得訂檯同爸爸食大餐慶祝 🍽️',
+                    note: '同自己一樣係5月壽星！記得訂檯同爸爸食大餐慶祝 🍽️',
                     repeatYearly: true,
                     pinned: false,
+                    checklist: getDefaultChecklist('birthday'),
                     createdAt: nowIso
                 },
                 {
@@ -569,10 +942,12 @@
                     date: getNextOccurrenceDateString('06-29'),
                     time: '00:00',
                     category: 'birthday',
+                    countMode: 'countdown',
                     icon: '🌸',
                     note: '準備靚靚生日蛋糕同禮物送比媽咪 💖🎂',
                     repeatYearly: true,
                     pinned: false,
+                    checklist: getDefaultChecklist('birthday'),
                     createdAt: nowIso
                 },
                 {
@@ -581,10 +956,12 @@
                     date: getNextOccurrenceDateString('07-20'),
                     time: '00:00',
                     category: 'birthday',
+                    countMode: 'countdown',
                     icon: '🍰',
                     note: '同阿哥慶祝生日，食餐好嘅！🎉',
                     repeatYearly: true,
                     pinned: false,
+                    checklist: getDefaultChecklist('birthday'),
                     createdAt: nowIso
                 },
                 {
@@ -593,10 +970,12 @@
                     date: getNextOccurrenceDateString('09-22'),
                     time: '00:00',
                     category: 'birthday',
+                    countMode: 'countdown',
                     icon: '🎀',
                     note: '處女座細妹嘉研生日大快樂！準備禮物同蛋糕 🍓',
                     repeatYearly: true,
                     pinned: false,
+                    checklist: getDefaultChecklist('birthday'),
                     createdAt: nowIso
                 },
                 {
@@ -605,10 +984,12 @@
                     date: getNextOccurrenceDateString('01-18'),
                     time: '00:00',
                     category: 'birthday',
+                    countMode: 'countdown',
                     icon: '🐰',
                     note: '準備杏仁磅蛋糕同埋士多啤梨一齊慶祝！🍓',
                     repeatYearly: true,
                     pinned: false,
+                    checklist: getDefaultChecklist('birthday'),
                     createdAt: '2026-01-18T00:00:00.000Z'
                 },
                 {
@@ -617,31 +998,88 @@
                     date: getNextOccurrenceDateString('12-25'),
                     time: '00:00',
                     category: 'holiday',
+                    countMode: 'countdown',
                     icon: '🎄',
                     note: '交換聖誕禮物同埋睇燈飾 ✨',
                     repeatYearly: true,
                     pinned: false,
+                    checklist: getDefaultChecklist('holiday'),
                     createdAt: nowIso
                 }
             ];
         }
 
         let events = [];
+        window.getEventsState = () => events;
+        window.applyRemoteEvents = (remoteList) => {
+            events = remoteList;
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(events));
+            renderEvents();
+        };
 
-        // 載入資料並確保屋企人生日已經自動加落去
+        function setTheme(themeName) {
+            document.documentElement.setAttribute('data-theme', themeName);
+            localStorage.setItem(THEME_KEY, themeName);
+            const mascotEl = document.getElementById('mascotContainer');
+            const titleEl = document.getElementById('appMainTitle');
+            const badgeEl = document.getElementById('themeBadgeText');
+            const metaTheme = document.getElementById('metaThemeColor');
+
+            ['melody', 'kuromi', 'twinstars'].forEach(t => {
+                const btn = document.getElementById(`themeBtn-${t}`);
+                if (btn) {
+                    btn.className = t === themeName
+                        ? 'px-2.5 py-1.5 rounded-xl text-xs font-bold transition-all bg-melody-hot text-white shadow-sm flex items-center gap-1'
+                        : 'px-2.5 py-1.5 rounded-xl text-xs font-bold transition-all text-melody-brown hover:opacity-80 flex items-center gap-1';
+                }
+            });
+
+            if (themeName === 'kuromi') {
+                mascotEl.innerHTML = SANRIO_MASCOTS.kuromi;
+                titleEl.textContent = 'Kuromi 酷洛米倒數日記';
+                badgeEl.textContent = '😈 Kuromi Cheeky Timer';
+                if (metaTheme) metaTheme.content = '#1E162B';
+            } else if (themeName === 'twinstars') {
+                mascotEl.innerHTML = SANRIO_MASCOTS.twinstars;
+                titleEl.textContent = 'Little Twin Stars 星願倒數';
+                badgeEl.textContent = '🌟 Kiki & Lala Star Timer';
+                if (metaTheme) metaTheme.content = '#F0F7FF';
+            } else {
+                mascotEl.innerHTML = SANRIO_MASCOTS.melody;
+                titleEl.textContent = 'My Melody 倒數日記';
+                badgeEl.textContent = '🎀 Sanrio Cute Timer';
+                if (metaTheme) metaTheme.content = '#FFF0F5';
+            }
+            playCuteSound('pop');
+        }
+
         function loadEvents() {
             const defaults = getDefaultEvents();
             try {
                 const raw = localStorage.getItem(STORAGE_KEY);
                 if (raw) {
                     events = JSON.parse(raw);
-                    // 檢查屋企人生日係咪已經喺入面，如果之前未有就自動補返入去
                     const familyIds = ['evt_self_bday', 'evt_dad_bday', 'evt_mum_bday', 'evt_bro_bday', 'evt_sis_bday'];
                     let updated = false;
                     familyIds.forEach(fid => {
                         const famEvt = defaults.find(d => d.id === fid);
                         if (famEvt && !events.some(e => e.id === fid || e.title === famEvt.title)) {
                             events.push(famEvt);
+                            updated = true;
+                        }
+                    });
+                    // 自動修正舊版 05-24 自己生日做 05-14，並確保每項都有 checklist
+                    events.forEach(evt => {
+                        if (evt.id === 'evt_self_bday' || (evt.title && evt.title.includes('金牛雞翼'))) {
+                            const correctSelfDate = getNextOccurrenceDateString('05-14');
+                            if (evt.date !== correctSelfDate) {
+                                evt.date = correctSelfDate;
+                                evt.note = '5月14日正宗金牛座！祝自己生日快樂，買份大禮物同食雞翼獎勵自己 ✨🍗';
+                                updated = true;
+                            }
+                        }
+                        if (!Array.isArray(evt.checklist)) {
+                            evt.checklist = getDefaultChecklist(evt.category);
                             updated = true;
                         }
                     });
@@ -658,12 +1096,52 @@
         function saveToStorage() {
             try {
                 localStorage.setItem(STORAGE_KEY, JSON.stringify(events));
+                if (typeof window.pushEventsToCloud === 'function') {
+                    window.pushEventsToCloud();
+                }
             } catch (e) {
                 console.error('儲存失敗', e);
             }
         }
 
-        // --- 音效系統 (Tone.js) ---
+        // --- 快速加入預設分類 ---
+        let currentPresetCat = 'family';
+        function filterQuickPresets(pcat) {
+            playCuteSound('pop');
+            currentPresetCat = pcat;
+            document.querySelectorAll('.preset-tab').forEach(btn => {
+                if (btn.dataset.pcat === pcat) {
+                    btn.className = 'preset-tab px-3 py-1 rounded-full text-xs font-bold bg-melody-hot text-white shadow-sm whitespace-nowrap transition-all';
+                } else {
+                    btn.className = 'preset-tab px-3 py-1 rounded-full text-xs font-bold bg-melody-light text-melody-brown border border-melody-pink whitespace-nowrap transition-all';
+                }
+            });
+            renderQuickPresetButtons();
+        }
+
+        function renderQuickPresetButtons() {
+            const container = document.getElementById('quickPresetsContainer');
+            if (!container) return;
+            const list = currentPresetCat === 'all' 
+                ? QUICK_PRESETS_CATALOG 
+                : QUICK_PRESETS_CATALOG.filter(item => item.pcat === currentPresetCat);
+
+            container.innerHTML = list.map((item) => {
+                const dateLabel = item.date.length === 5 ? item.date.replace('-', '月') + '日' : item.date;
+                const safeTitle = item.title.replace(/'/g, "\\'");
+                const safeNote = (item.note || '').replace(/'/g, "\\'");
+                return `
+                    <button onclick="addQuickPreset('${safeTitle}', '${item.date}', '${item.category}', '${item.icon}', ${item.isYearly}, '${safeNote}')" 
+                        class="candy-btn-secondary whitespace-nowrap px-3.5 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 flex-shrink-0">
+                        <span>${item.icon}</span>
+                        <span>${item.title}</span>
+                        <span class="text-[11px] opacity-70 font-normal">(${dateLabel})</span>
+                    </button>
+                `;
+            }).join('');
+        }
+
+        // --- 音效與花紙 ---
         function playCuteSound(type = 'pop') {
             if (!soundEnabled || typeof Tone === 'undefined') return;
             try {
@@ -674,9 +1152,7 @@
                     }).toDestination();
                     synth.volume.value = -10;
                 }
-                if (Tone.context.state !== 'running') {
-                    Tone.start();
-                }
+                if (Tone.context.state !== 'running') Tone.start();
                 if (type === 'pop') {
                     synth.triggerAttackRelease(['E5', 'G5'], '16n');
                 } else if (type === 'success') {
@@ -688,9 +1164,7 @@
                 } else if (type === 'delete') {
                     synth.triggerAttackRelease(['G4', 'E4'], '16n');
                 }
-            } catch (err) {
-                // 忽略瀏覽器未授權音訊錯誤
-            }
+            } catch (err) {}
         }
 
         function toggleSound() {
@@ -700,47 +1174,47 @@
             if (soundEnabled) playCuteSound('pop');
         }
 
-        // --- 慶祝花紙效果 ---
         function shootPinkConfetti() {
             if (typeof confetti === 'function') {
                 confetti({
                     particleCount: 55,
                     spread: 70,
                     origin: { y: 0.7 },
-                    colors: ['#FFB6C1', '#FF69B4', '#FFF68F', '#FFFFFF', '#FF1493']
+                    colors: ['#FFB6C1', '#FF69B4', '#FFF68F', '#C084FC', '#A5D8FF']
                 });
             }
         }
 
-        // --- Melody 語錄互動 ---
         const melodyQuotes = [
             '「一齊期待每一個特別又幸福嘅日子啦～♪」',
-            '「今日都要好似士多啤梨咁甜甜蜜蜜呀！🍓」',
-            '「同最鍾意嘅人一齊倒數，時間都變得好溫柔～💖」',
-            '「記得準備好心情迎接下一個大日子呀！🎀」',
-            '「Melody 會一直陪住你倒數架！🐰✨」'
+            '「5月有你自己(金牛雞翼)同 Dad 生日，超熱鬧呀！🍗🎂」',
+            '「同最愛嘅屋企人一齊倒數，時間都變得好溫柔～💖」',
+            '「撳下卡片嘅『🎁清單』就可以記低買咩生日禮物架啦！」',
+            '「夜晚用 iPhone 可以切換右上角 Kuromi 深色護眼模式架！😈💜」'
         ];
         function triggerMelodyGreeting() {
             playCuteSound('success');
             shootPinkConfetti();
             const randomQuote = melodyQuotes[Math.floor(Math.random() * melodyQuotes.length)];
             document.getElementById('melodySpeech').textContent = randomQuote;
-            showToast('My Melody 同你揮緊手呀！🐰💕', '🌸');
+            showToast('收到滿滿嘅幸福魔法！✨💕', '🌸');
         }
 
-        // --- 計算目標時間與每年重複邏輯 ---
         function getEventTiming(evt) {
             const now = new Date();
             const timeStr = evt.time || '00:00';
-            let targetDate = new Date(`${evt.date}T${timeStr}:00`);
+            const rawParts = evt.date.split('-');
+            const monthNum = parseInt(rawParts[1], 10);
+            const dayNum = parseInt(rawParts[2], 10);
 
-            // 檢查是否「正日當天」
+            let targetDate = new Date(`${evt.date}T${timeStr}:00`);
+            const isCountUp = evt.countMode === 'countup';
+
             const isSameDay = now.getFullYear() === targetDate.getFullYear() &&
                               now.getMonth() === targetDate.getMonth() &&
                               now.getDate() === targetDate.getDate();
 
-            // 如果支援每年重複，而且已經過咗正日（唔係今日，而且細過而家）
-            if (evt.repeatYearly && !isSameDay && targetDate < now) {
+            if (!isCountUp && evt.repeatYearly && !isSameDay && targetDate < now) {
                 while (targetDate < now) {
                     targetDate.setFullYear(targetDate.getFullYear() + 1);
                 }
@@ -755,7 +1229,9 @@
             const minutes = Math.floor((absDiff / 1000 / 60) % 60);
             const seconds = Math.floor((absDiff / 1000) % 60);
 
-            // 計算進度百分比 (由建立日 或 一年前 開始計)
+            // 是否 7 日內緊急倒數
+            const isUrgent = !isPast && !isCountUp && (days <= 7 || isSameDay);
+
             let startMs = evt.createdAt ? new Date(evt.createdAt).getTime() : (targetDate.getTime() - 30 * 86400000);
             if (evt.repeatYearly) {
                 const oneYearBefore = new Date(targetDate);
@@ -771,10 +1247,14 @@
 
             return {
                 targetDate,
+                monthNum,
+                dayNum,
                 formattedTarget,
                 diffMs,
                 isSameDay,
                 isPast,
+                isCountUp,
+                isUrgent,
                 days,
                 hours,
                 minutes,
@@ -783,31 +1263,28 @@
             };
         }
 
-        // 分類名稱轉換
         function getCategoryBadge(cat) {
             const map = {
                 holiday: { label: '🌸 節日', bg: 'bg-pink-100 text-pink-700 border-pink-300' },
-                birthday: { label: '🎂 生日', bg: 'bg-yellow-100 text-amber-700 border-yellow-300' },
+                birthday: { label: '🎂 生日', bg: 'bg-amber-100 text-amber-800 border-amber-300' },
                 anniversary: { label: '💖 紀念日', bg: 'bg-rose-100 text-rose-700 border-rose-300' },
                 trip: { label: '✈️ 旅行', bg: 'bg-purple-100 text-purple-700 border-purple-300' }
             };
             return map[cat] || map.holiday;
         }
 
-        // --- 渲染置頂大橫幅 (Hero Banner) ---
         function renderHeroBanner() {
             const heroContainer = document.getElementById('heroContent');
             if (events.length === 0) {
                 heroContainer.innerHTML = `
-                    <div class="text-center w-full py-4">
-                        <p class="text-lg font-bold text-melody-dark">仲未有任何倒數日子呀 🌸</p>
-                        <p class="text-sm text-melody-softbrown mt-1">快啲撳右上角「＋ 新增倒數日子」或者下面嘅熱門節日啦！</p>
+                    <div class="text-center w-full py-3">
+                        <p class="text-base sm:text-lg font-bold text-melody-dark">仲未有任何倒數日子呀 🌸</p>
+                        <p class="text-xs sm:text-sm text-melody-softbrown mt-1">快啲撳下面嘅「＋」掣或者屋企人生日一鍵加入啦！</p>
                     </div>
                 `;
                 return;
             }
 
-            // 搵出 Pinned 項目，如果無就揀最快到嘅未來項目
             let heroEvt = events.find(e => e.pinned);
             if (!heroEvt) {
                 const sorted = [...events].sort((a, b) => {
@@ -824,64 +1301,75 @@
 
             let statusHeadline = '';
             if (timing.isSameDay) {
-                statusHeadline = `<span class="text-melody-hot font-black text-xl sm:text-2xl animate-bounce inline-block">🎉 今日就係正日啦！Happy Day! 🎀</span>`;
-            } else if (timing.isPast) {
-                statusHeadline = `<span class="text-melody-softbrown font-bold">已經過咗 ${timing.days} 日啦 ✨</span>`;
+                statusHeadline = `<span class="text-melody-hot font-black text-lg sm:text-2xl animate-bounce inline-block">🎉 今日就係正日啦！Happy Day! 🎀</span>`;
+            } else if (timing.isCountUp || timing.isPast) {
+                statusHeadline = `<div class="time-box px-5 py-3 rounded-2xl text-center"><span class="text-sm sm:text-base font-bold text-melody-brown">已經幸福度過咗 <strong class="text-2xl sm:text-3xl font-black text-melody-hot mx-1">${timing.days}</strong> 日 💖</span></div>`;
             } else {
                 statusHeadline = `
-                    <div class="flex items-center gap-2 sm:gap-3">
-                        <div class="time-box px-3.5 py-2.5 sm:px-5 sm:py-3 rounded-2xl text-center min-w-[68px] sm:min-w-[82px]">
+                    <div class="flex items-center gap-1.5 sm:gap-3">
+                        <div class="time-box px-3 py-2 sm:px-4 sm:py-2.5 rounded-2xl text-center min-w-[62px] sm:min-w-[78px]">
                             <div class="text-2xl sm:text-4xl font-black text-melody-dark leading-none" id="hero-days">${timing.days}</div>
-                            <div class="text-[11px] sm:text-xs font-bold text-melody-softbrown mt-1">日 (Days)</div>
+                            <div class="text-[10px] sm:text-xs font-bold text-melody-softbrown mt-1">日</div>
                         </div>
-                        <span class="text-xl font-black text-melody-pink">:</span>
-                        <div class="time-box px-3 py-2.5 sm:px-4 sm:py-3 rounded-2xl text-center min-w-[58px] sm:min-w-[72px]">
+                        <span class="text-lg font-black text-melody-pink">:</span>
+                        <div class="time-box px-2.5 py-2 sm:px-4 sm:py-2.5 rounded-2xl text-center min-w-[54px] sm:min-w-[68px]">
                             <div class="text-2xl sm:text-4xl font-black text-melody-hot leading-none" id="hero-hours">${String(timing.hours).padStart(2, '0')}</div>
-                            <div class="text-[11px] sm:text-xs font-bold text-melody-softbrown mt-1">時 (Hrs)</div>
+                            <div class="text-[10px] sm:text-xs font-bold text-melody-softbrown mt-1">時</div>
                         </div>
-                        <span class="text-xl font-black text-melody-pink">:</span>
-                        <div class="time-box px-3 py-2.5 sm:px-4 sm:py-3 rounded-2xl text-center min-w-[58px] sm:min-w-[72px]">
+                        <span class="text-lg font-black text-melody-pink">:</span>
+                        <div class="time-box px-2.5 py-2 sm:px-4 sm:py-2.5 rounded-2xl text-center min-w-[54px] sm:min-w-[68px]">
                             <div class="text-2xl sm:text-4xl font-black text-melody-hot leading-none" id="hero-mins">${String(timing.minutes).padStart(2, '0')}</div>
-                            <div class="text-[11px] sm:text-xs font-bold text-melody-softbrown mt-1">分 (Min)</div>
+                            <div class="text-[10px] sm:text-xs font-bold text-melody-softbrown mt-1">分</div>
                         </div>
-                        <span class="text-xl font-black text-melody-pink">:</span>
-                        <div class="time-box px-3 py-2.5 sm:px-4 sm:py-3 rounded-2xl text-center min-w-[58px] sm:min-w-[72px]">
+                        <span class="text-lg font-black text-melody-pink">:</span>
+                        <div class="time-box px-2.5 py-2 sm:px-4 sm:py-2.5 rounded-2xl text-center min-w-[54px] sm:min-w-[68px]">
                             <div class="text-2xl sm:text-4xl font-black text-melody-dark leading-none" id="hero-secs">${String(timing.seconds).padStart(2, '0')}</div>
-                            <div class="text-[11px] sm:text-xs font-bold text-melody-softbrown mt-1">秒 (Sec)</div>
+                            <div class="text-[10px] sm:text-xs font-bold text-melody-softbrown mt-1">秒</div>
                         </div>
                     </div>
                 `;
             }
 
             heroContainer.innerHTML = `
-                <div class="space-y-2 text-center lg:text-left">
-                    <div class="flex flex-wrap items-center justify-center lg:justify-start gap-2">
-                        <span class="px-3 py-0.5 rounded-full bg-melody-hot text-white text-xs font-bold shadow-sm">
-                            📌 最期待大日子
+                <div class="space-y-1.5 text-center lg:text-left">
+                    <div class="flex flex-wrap items-center justify-center lg:justify-start gap-1.5">
+                        <span class="px-2.5 py-0.5 rounded-full bg-melody-hot text-white text-xs font-bold shadow-sm">
+                            📌 置頂主打大日子
                         </span>
                         <span class="px-2.5 py-0.5 rounded-full text-xs font-bold border ${badge.bg}">
                             ${badge.label}
                         </span>
-                        ${heroEvt.repeatYearly ? '<span class="px-2.5 py-0.5 rounded-full bg-white text-melody-softbrown border border-melody-pink text-xs font-bold">🔁 每年重複</span>' : ''}
+                        ${timing.isUrgent ? '<span class="px-2.5 py-0.5 rounded-full bg-amber-400 text-amber-950 text-xs font-black animate-pulse">🔥 仲有唔夠一星期！</span>' : ''}
                     </div>
-                    <h2 class="text-2xl sm:text-3xl font-black text-melody-brown flex items-center justify-center lg:justify-start gap-2.5 pt-1">
-                        <span class="text-3xl sm:text-4xl">${heroEvt.icon || '🐰'}</span>
+                    <h2 class="text-xl sm:text-3xl font-black text-melody-brown flex items-center justify-center lg:justify-start gap-2 pt-0.5">
+                        <span class="text-2xl sm:text-4xl">${heroEvt.icon || '🐰'}</span>
                         <span>${escapeHtml(heroEvt.title)}</span>
                     </h2>
                     <p class="text-xs sm:text-sm font-bold text-melody-softbrown">
-                        📅 目標日期：${timing.formattedTarget} ${heroEvt.time && heroEvt.time !== '00:00' ? heroEvt.time : ''}
+                        📅 目標日期：${timing.formattedTarget}
                         ${heroEvt.note ? ` · 📝 ${escapeHtml(heroEvt.note)}` : ''}
                     </p>
                 </div>
-                <div class="flex flex-col items-center">
+                <div class="flex flex-col items-center gap-2">
                     ${statusHeadline}
+                    <div class="flex items-center gap-2 mt-1">
+                        <button onclick="openChecklistModal('${heroEvt.id}')" class="candy-btn-secondary px-3 py-1 rounded-full text-xs font-bold">
+                            🎁 準備清單
+                        </button>
+                        <button onclick="openPosterModal('${heroEvt.id}')" class="candy-btn-secondary px-3 py-1 rounded-full text-xs font-bold">
+                            📸 分享海報卡
+                        </button>
+                        <button onclick="exportEventToIcs('${heroEvt.id}')" class="candy-btn-secondary px-3 py-1 rounded-full text-xs font-bold">
+                            📅 加落 iPhone 日曆
+                        </button>
+                    </div>
                 </div>
             `;
         }
 
-        // --- 渲染所有倒數卡片 ---
         function renderEvents() {
             renderHeroBanner();
+            renderCalendarTimeline();
 
             const grid = document.getElementById('eventsGrid');
             const searchQuery = (document.getElementById('searchInput')?.value || '').trim().toLowerCase();
@@ -895,7 +1383,6 @@
                 return matchCat && matchSearch;
             });
 
-            // 排序
             filtered.sort((a, b) => {
                 const tA = getEventTiming(a);
                 const tB = getEventTiming(b);
@@ -911,10 +1398,10 @@
 
             if (filtered.length === 0) {
                 grid.innerHTML = `
-                    <div class="col-span-full melody-card rounded-3xl p-10 text-center space-y-3">
-                        <div class="text-5xl">🐰💭</div>
-                        <h3 class="text-lg font-bold text-melody-dark">搵唔到符合條件嘅倒數日子～</h3>
-                        <p class="text-xs sm:text-sm text-melody-softbrown">試下切換分類或者撳「＋ 新增倒數日子」加返個特別日子啦！</p>
+                    <div class="col-span-full melody-card rounded-3xl p-8 text-center space-y-2">
+                        <div class="text-4xl">🐰💭</div>
+                        <h3 class="text-base font-bold text-melody-dark">搵唔到符合條件嘅倒數日子～</h3>
+                        <p class="text-xs text-melody-softbrown">試下切換分類或者撳底部「＋」加返個特別日子啦！</p>
                     </div>
                 `;
                 return;
@@ -923,23 +1410,25 @@
             grid.innerHTML = filtered.map(evt => {
                 const timing = getEventTiming(evt);
                 const badge = getCategoryBadge(evt.category);
+                const checklist = Array.isArray(evt.checklist) ? evt.checklist : [];
+                const doneCount = checklist.filter(c => c.done).length;
 
                 let countdownHtml = '';
                 if (timing.isSameDay) {
                     countdownHtml = `
-                        <div class="py-3 px-4 rounded-2xl bg-gradient-to-r from-melody-pink/40 to-melody-bow/50 border-2 border-melody-hot text-center">
-                            <span class="text-base font-black text-melody-dark">🎂 今日就係正日啦！🎉</span>
+                        <div class="py-2.5 px-4 rounded-2xl bg-gradient-to-r from-pink-400/30 to-yellow-200/50 border-2 border-melody-hot text-center">
+                            <span class="text-sm sm:text-base font-black text-melody-dark">🎂 今日就係正日啦！Happy Day! 🎉</span>
                         </div>
                     `;
-                } else if (timing.isPast) {
+                } else if (timing.isCountUp || timing.isPast) {
                     countdownHtml = `
-                        <div class="py-2.5 px-4 rounded-2xl bg-gray-100 border border-gray-200 text-center">
-                            <span class="text-sm font-bold text-melody-softbrown">已經過咗 <strong class="text-melody-dark text-base">${timing.days}</strong> 日 ✨</span>
+                        <div class="py-2.5 px-4 rounded-2xl time-box text-center">
+                            <span class="text-xs sm:text-sm font-bold text-melody-softbrown">已經度過咗 <strong class="text-melody-hot text-lg font-black mx-1">${timing.days}</strong> 日 ✨</span>
                         </div>
                     `;
                 } else {
                     countdownHtml = `
-                        <div class="grid grid-cols-4 gap-2 text-center">
+                        <div class="grid grid-cols-4 gap-1.5 text-center">
                             <div class="time-box py-2 px-1 rounded-xl">
                                 <div class="text-lg sm:text-xl font-black text-melody-dark" data-cd-days="${evt.id}">${timing.days}</div>
                                 <div class="text-[10px] font-bold text-melody-softbrown">日</div>
@@ -961,27 +1450,28 @@
                 }
 
                 return `
-                    <article class="melody-card rounded-3xl p-5 flex flex-col justify-between gap-4 relative group">
-                        <!-- 頂部標籤與操作按鈕 -->
+                    <article class="melody-card ${timing.isUrgent ? 'urgent-card' : ''} rounded-3xl p-4 sm:p-5 flex flex-col justify-between gap-3.5 relative">
                         <div>
-                            <div class="flex items-center justify-between gap-2 mb-2.5">
-                                <div class="flex items-center gap-1.5 flex-wrap">
-                                    <span class="px-2.5 py-0.5 rounded-full text-xs font-bold border ${badge.bg}">
+                            <!-- 頂部標籤與右上角小工具 -->
+                            <div class="flex items-center justify-between gap-1 mb-2.5">
+                                <div class="flex items-center gap-1 flex-wrap">
+                                    <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold border ${badge.bg}">
                                         ${badge.label}
                                     </span>
-                                    ${evt.repeatYearly ? '<span class="px-2 py-0.5 rounded-full bg-melody-light text-melody-dark border border-melody-pink text-[11px] font-bold">🔁 每年</span>' : ''}
+                                    ${evt.repeatYearly ? '<span class="px-2 py-0.5 rounded-full bg-melody-light text-melody-dark border border-melody-pink text-[10px] font-bold">🔁 每年</span>' : ''}
+                                    ${timing.isUrgent ? '<span class="px-2 py-0.5 rounded-full bg-amber-300 text-amber-950 text-[10px] font-black animate-bounce">🔥 即將到</span>' : ''}
                                 </div>
                                 <div class="flex items-center gap-1">
-                                    <button onclick="togglePin('${evt.id}')" title="${evt.pinned ? '已釘選置頂' : '釘選到最頂部'}" 
-                                        class="w-7 h-7 rounded-full flex items-center justify-center text-xs transition-transform hover:scale-110 ${evt.pinned ? 'bg-melody-hot text-white shadow-sm' : 'bg-melody-light text-melody-softbrown hover:bg-melody-pink/40'}">
+                                    <button onclick="togglePin('${evt.id}')" title="置頂" 
+                                        class="w-7 h-7 rounded-full flex items-center justify-center text-xs ${evt.pinned ? 'bg-melody-hot text-white shadow-sm' : 'bg-melody-light text-melody-softbrown'}">
                                         📌
                                     </button>
-                                    <button onclick="editEvent('${evt.id}')" title="編輯日子" 
-                                        class="w-7 h-7 rounded-full bg-melody-light text-melody-brown hover:bg-melody-pink/40 flex items-center justify-center text-xs transition-transform hover:scale-110">
+                                    <button onclick="editEvent('${evt.id}')" title="編輯" 
+                                        class="w-7 h-7 rounded-full bg-melody-light text-melody-brown flex items-center justify-center text-xs">
                                         ✏️
                                     </button>
                                     <button onclick="deleteEvent('${evt.id}')" title="刪除" 
-                                        class="w-7 h-7 rounded-full bg-melody-light text-melody-brown hover:bg-rose-200 flex items-center justify-center text-xs transition-transform hover:scale-110">
+                                        class="w-7 h-7 rounded-full bg-melody-light text-melody-brown hover:bg-rose-200 flex items-center justify-center text-xs">
                                         🗑️
                                     </button>
                                 </div>
@@ -989,7 +1479,7 @@
 
                             <!-- 標題與日期 -->
                             <div class="flex items-start gap-3">
-                                <div class="w-12 h-12 rounded-2xl bg-melody-bg border-2 border-melody-pink flex items-center justify-center text-2xl flex-shrink-0 shadow-inner">
+                                <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-melody-bg border-2 border-melody-pink flex items-center justify-center text-2xl flex-shrink-0">
                                     ${evt.icon || '🐰'}
                                 </div>
                                 <div class="min-w-0 flex-1">
@@ -999,24 +1489,37 @@
                                     <p class="text-xs font-bold text-melody-softbrown mt-0.5">
                                         🗓️ ${timing.formattedTarget}
                                     </p>
-                                    ${evt.note ? `<p class="text-xs text-melody-dark/80 mt-1 line-clamp-1 bg-melody-light/80 px-2.5 py-1 rounded-xl border border-melody-pink/50">📝 ${escapeHtml(evt.note)}</p>` : ''}
+                                    ${evt.note ? `<p class="text-xs text-melody-brown/90 mt-1.5 line-clamp-2 bg-melody-light px-2.5 py-1 rounded-xl border border-melody-pink/50">📝 ${escapeHtml(evt.note)}</p>` : ''}
                                 </div>
                             </div>
                         </div>
 
-                        <!-- 倒數數字區 -->
+                        <!-- 倒數數字與多功能動作列 -->
                         <div class="space-y-2.5">
                             ${countdownHtml}
 
-                            <!-- 粉紅愛心進度條 -->
-                            <div class="pt-1">
-                                <div class="flex justify-between text-[11px] font-bold text-melody-softbrown mb-1">
+                            <!-- 進度條 -->
+                            <div>
+                                <div class="flex justify-between text-[10px] font-bold text-melody-softbrown mb-1">
                                     <span>期待值進度</span>
                                     <span>${timing.progress}% 🌸</span>
                                 </div>
-                                <div class="w-full h-2.5 bg-melody-light rounded-full overflow-hidden border border-melody-pink p-0.5">
-                                    <div class="h-full bg-gradient-to-r from-melody-pink to-melody-hot rounded-full transition-all duration-500" style="width: ${timing.progress}%"></div>
+                                <div class="w-full h-2 bg-melody-light rounded-full overflow-hidden border border-melody-pink p-0.5">
+                                    <div class="h-full bg-gradient-to-r from-pink-300 to-pink-500 rounded-full transition-all duration-500" style="width: ${timing.progress}%"></div>
                                 </div>
+                            </div>
+
+                            <!-- 卡片底部三合一快捷掣：禮物清單 / IG海報 / Apple日曆 -->
+                            <div class="grid grid-cols-3 gap-1.5 pt-1 border-t border-melody-pink/30">
+                                <button onclick="openChecklistModal('${evt.id}')" class="candy-btn-secondary py-1.5 px-2 rounded-xl text-[11px] font-bold flex items-center justify-center gap-1">
+                                    <span>🎁</span> 清單 (${doneCount}/${checklist.length})
+                                </button>
+                                <button onclick="openPosterModal('${evt.id}')" class="candy-btn-secondary py-1.5 px-2 rounded-xl text-[11px] font-bold flex items-center justify-center gap-1">
+                                    <span>📸</span> 分享卡
+                                </button>
+                                <button onclick="exportEventToIcs('${evt.id}')" class="candy-btn-secondary py-1.5 px-2 rounded-xl text-[11px] font-bold flex items-center justify-center gap-1">
+                                    <span>📅</span> 加日曆
+                                </button>
                             </div>
                         </div>
                     </article>
@@ -1024,7 +1527,345 @@
             }).join('');
         }
 
-        // --- 每秒即時更新數字 (唔重新渲染成個 DOM，保持流暢) ---
+        function renderCalendarTimeline() {
+            const container = document.getElementById('calendarMonthsGrid');
+            if (!container) return;
+
+            const currentMonth = new Date().getMonth() + 1;
+            let html = '';
+
+            for (let m = 1; m <= 12; m++) {
+                const monthEvents = events
+                    .map(e => ({ evt: e, timing: getEventTiming(e) }))
+                    .filter(item => item.timing.monthNum === m)
+                    .sort((a, b) => a.timing.dayNum - b.timing.dayNum);
+
+                const isCurrentMonth = m === currentMonth;
+
+                html += `
+                    <div class="p-3.5 rounded-2xl border-2 ${isCurrentMonth ? 'border-melody-hot bg-melody-bg/60' : 'border-melody-pink bg-melody-light/70'} space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm font-black text-melody-dark flex items-center gap-1.5">
+                                🌸 ${m} 月份
+                                ${isCurrentMonth ? '<span class="text-[10px] px-2 py-0.5 rounded-full bg-melody-hot text-white">本月</span>' : ''}
+                            </span>
+                            <span class="text-xs font-bold text-melody-softbrown">${monthEvents.length} 個大日子</span>
+                        </div>
+                        ${monthEvents.length === 0 ? `
+                            <p class="text-xs text-melody-softbrown/70 py-2">呢個月暫時未有大日子 ✨</p>
+                        ` : `
+                            <div class="space-y-1.5">
+                                ${monthEvents.map(({ evt, timing }) => `
+                                    <div onclick="openChecklistModal('${evt.id}')" class="cursor-pointer p-2 rounded-xl bg-white/80 dark:bg-black/20 border border-melody-pink flex items-center justify-between gap-2 hover:border-melody-hot">
+                                        <div class="flex items-center gap-2 min-w-0">
+                                            <span class="text-base">${evt.icon || '🎂'}</span>
+                                            <div class="min-w-0">
+                                                <div class="text-xs font-bold text-gray-800 truncate">${escapeHtml(evt.title)}</div>
+                                                <div class="text-[10px] text-gray-500">${m}月${timing.dayNum}日</div>
+                                            </div>
+                                        </div>
+                                        <span class="text-[11px] font-black text-pink-600 whitespace-nowrap">${timing.days}日</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        `}
+                    </div>
+                `;
+            }
+            container.innerHTML = html;
+        }
+
+        function setViewMode(mode) {
+            playCuteSound('pop');
+            currentViewMode = mode;
+            const gridEl = document.getElementById('eventsGrid');
+            const calEl = document.getElementById('calendarTimelineView');
+            const btnGrid = document.getElementById('viewBtn-grid');
+            const btnCal = document.getElementById('viewBtn-calendar');
+
+            if (mode === 'calendar') {
+                gridEl.classList.add('hidden');
+                calEl.classList.remove('hidden');
+                btnCal.className = 'px-3 py-1.5 rounded-xl text-xs font-bold bg-melody-hot text-white shadow-sm';
+                btnGrid.className = 'px-3 py-1.5 rounded-xl text-xs font-bold text-melody-brown';
+            } else {
+                calEl.classList.add('hidden');
+                gridEl.classList.remove('hidden');
+                btnGrid.className = 'px-3 py-1.5 rounded-xl text-xs font-bold bg-melody-hot text-white shadow-sm';
+                btnCal.className = 'px-3 py-1.5 rounded-xl text-xs font-bold text-melody-brown';
+            }
+        }
+
+        function switchBottomTab(tab) {
+            ['home', 'family', 'calendar', 'cloud'].forEach(t => {
+                const el = document.getElementById(`bnav-${t}`);
+                if (el) {
+                    el.className = t === tab
+                        ? 'flex flex-col items-center gap-0.5 py-1 px-3 rounded-2xl text-melody-hot font-bold transition-transform active:scale-90'
+                        : 'flex flex-col items-center gap-0.5 py-1 px-3 rounded-2xl text-melody-softbrown font-bold transition-transform active:scale-90';
+                }
+            });
+
+            if (tab === 'home') {
+                setViewMode('grid');
+                setCategoryFilter('all');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else if (tab === 'family') {
+                setViewMode('grid');
+                setCategoryFilter('birthday');
+                filterQuickPresets('family');
+                showToast('顯示緊屋企人與生日倒數！🎂', '👨‍👩‍👧‍👦');
+            } else if (tab === 'calendar') {
+                setViewMode('calendar');
+            }
+        }
+
+        // --- 🎁 禮物與慶祝 Checklist 邏輯 ---
+        function openChecklistModal(eventId) {
+            playCuteSound('pop');
+            activeChecklistEventId = eventId;
+            const evt = events.find(e => e.id === eventId);
+            if (!evt) return;
+            if (!Array.isArray(evt.checklist)) evt.checklist = getDefaultChecklist(evt.category);
+
+            document.getElementById('checklistModalTitle').innerHTML = `${evt.icon || '🎁'} ${escapeHtml(evt.title)} 準備清單`;
+            renderChecklistItems();
+
+            const modal = document.getElementById('checklistModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeChecklistModal() {
+            const modal = document.getElementById('checklistModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            renderEvents();
+        }
+
+        function renderChecklistItems() {
+            const evt = events.find(e => e.id === activeChecklistEventId);
+            const container = document.getElementById('checklistItemsContainer');
+            if (!evt || !container) return;
+
+            container.innerHTML = evt.checklist.map((item, idx) => `
+                <div class="flex items-center justify-between gap-2 p-3 rounded-2xl bg-melody-light border border-melody-pink">
+                    <label class="flex items-center gap-2.5 flex-1 cursor-pointer select-none">
+                        <input type="checkbox" ${item.done ? 'checked' : ''} onchange="toggleChecklistItem(${idx})" class="w-5 h-5 accent-pink-500 rounded">
+                        <span class="text-sm font-bold ${item.done ? 'line-through opacity-50' : ''} text-melody-brown">${escapeHtml(item.text)}</span>
+                    </label>
+                    <button onclick="removeChecklistItem(${idx})" class="text-xs text-melody-softbrown hover:text-rose-500 px-2">✕</button>
+                </div>
+            `).join('');
+        }
+
+        function toggleChecklistItem(idx) {
+            const evt = events.find(e => e.id === activeChecklistEventId);
+            if (!evt || !evt.checklist[idx]) return;
+            evt.checklist[idx].done = !evt.checklist[idx].done;
+            if (evt.checklist[idx].done) playCuteSound('success');
+            saveToStorage();
+            renderChecklistItems();
+        }
+
+        function addChecklistItem(e) {
+            e.preventDefault();
+            const input = document.getElementById('newChecklistInput');
+            const text = input.value.trim();
+            if (!text) return;
+            const evt = events.find(item => item.id === activeChecklistEventId);
+            if (!evt) return;
+            evt.checklist.push({ id: 'c_' + Date.now(), text, done: false });
+            input.value = '';
+            playCuteSound('pop');
+            saveToStorage();
+            renderChecklistItems();
+        }
+
+        function removeChecklistItem(idx) {
+            const evt = events.find(item => item.id === activeChecklistEventId);
+            if (!evt) return;
+            evt.checklist.splice(idx, 1);
+            saveToStorage();
+            renderChecklistItems();
+        }
+
+        // --- 📅 一鍵匯出至 iPhone / iPad Apple 日曆 (.ics) ---
+        function exportEventToIcs(eventId) {
+            const evt = events.find(e => e.id === eventId);
+            if (!evt) return;
+            const timing = getEventTiming(evt);
+            const yyyy = timing.targetDate.getFullYear();
+            const mm = String(timing.targetDate.getMonth() + 1).padStart(2, '0');
+            const dd = String(timing.targetDate.getDate()).padStart(2, '0');
+            const dateStr = `${yyyy}${mm}${dd}`;
+
+            const icsLines = [
+                'BEGIN:VCALENDAR',
+                'VERSION:2.0',
+                'PRODID:-//My Melody Countdown//HK',
+                'BEGIN:VEVENT',
+                `UID:${evt.id}@melodycountdown`,
+                `DTSTART;VALUE=DATE:${dateStr}`,
+                `SUMMARY:${evt.icon || '🎀'} ${evt.title}`,
+                `DESCRIPTION:${evt.note || 'My Melody 倒數日記提醒你！'}`,
+                evt.repeatYearly ? 'RRULE:FREQ=YEARLY' : '',
+                'BEGIN:VALARM',
+                'TRIGGER:-PT9H',
+                'ACTION:DISPLAY',
+                'DESCRIPTION:Reminder',
+                'END:VALARM',
+                'END:VEVENT',
+                'END:VCALENDAR'
+            ].filter(Boolean).join('\r\n');
+
+            const blob = new Blob([icsLines], { type: 'text/calendar;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${evt.title}.ics`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            playCuteSound('success');
+            showToast('已產生 iPhone 日曆檔 (.ics)！📅', '✨');
+        }
+
+        // --- 📸 9:16 IG Story / WhatsApp 海報卡繪製器 ---
+        function openPosterModal(eventId) {
+            playCuteSound('pop');
+            activePosterEventId = eventId;
+            const evt = events.find(e => e.id === eventId);
+            if (!evt) return;
+
+            drawPosterCanvas(evt);
+            const modal = document.getElementById('posterModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closePosterModal() {
+            const modal = document.getElementById('posterModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function drawPosterCanvas(evt) {
+            const canvas = document.getElementById('posterCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const timing = getEventTiming(evt);
+
+            // 背景粉紅夢幻漸層
+            const grad = ctx.createLinearGradient(0, 0, 540, 960);
+            grad.addColorStop(0, '#FFF0F5');
+            grad.addColorStop(0.5, '#FFE4EE');
+            grad.addColorStop(1, '#FFD1E3');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, 540, 960);
+
+            // 波點裝飾
+            ctx.fillStyle = 'rgba(255, 105, 180, 0.14)';
+            for (let x = 30; x < 540; x += 60) {
+                for (let y = 30; y < 960; y += 60) {
+                    ctx.beginPath();
+                    ctx.arc(x, y, 4, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+
+            // 白色主卡片框
+            ctx.fillStyle = '#FFFFFF';
+            ctx.strokeStyle = '#FF69B4';
+            ctx.lineWidth = 8;
+            ctx.beginPath();
+            ctx.roundRect(45, 90, 450, 780, 40);
+            ctx.fill();
+            ctx.stroke();
+
+            // 頂部標籤
+            ctx.fillStyle = '#FF69B4';
+            ctx.font = 'bold 24px "Zen Maru Gothic", sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('🎀 My Melody 夢幻倒數日記 🎀', 270, 165);
+
+            // 大 Icon
+            ctx.font = '110px sans-serif';
+            ctx.fillText(evt.icon || '🐰', 270, 310);
+
+            // 標題
+            ctx.fillStyle = '#5E3A43';
+            ctx.font = '900 34px "Zen Maru Gothic", sans-serif';
+            ctx.fillText(evt.title.slice(0, 14), 270, 405);
+
+            // 倒數大字框
+            ctx.fillStyle = '#FFF0F5';
+            ctx.strokeStyle = '#FFB6C1';
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.roundRect(85, 455, 370, 210, 30);
+            ctx.fill();
+            ctx.stroke();
+
+            if (timing.isSameDay) {
+                ctx.fillStyle = '#D63384';
+                ctx.font = '900 44px "Zen Maru Gothic", sans-serif';
+                ctx.fillText('🎉 今日係正日！', 270, 575);
+            } else {
+                ctx.fillStyle = '#9E7B83';
+                ctx.font = 'bold 22px "Zen Maru Gothic", sans-serif';
+                ctx.fillText(timing.isCountUp || timing.isPast ? '已經幸福度過咗' : '距離目標日子仲有', 270, 505);
+
+                ctx.fillStyle = '#D63384';
+                ctx.font = '900 86px "Fredoka", sans-serif';
+                ctx.fillText(`${timing.days}`, 245, 605);
+
+                ctx.font = 'bold 30px "Zen Maru Gothic", sans-serif';
+                ctx.fillText('日', 355, 600);
+            }
+
+            // 目標日期與備註
+            ctx.fillStyle = '#5E3A43';
+            ctx.font = 'bold 23px "Zen Maru Gothic", sans-serif';
+            ctx.fillText(`📅 ${timing.formattedTarget}`, 270, 735);
+
+            if (evt.note) {
+                ctx.fillStyle = '#9E7B83';
+                ctx.font = '20px "Zen Maru Gothic", sans-serif';
+                ctx.fillText(`「${evt.note.slice(0, 18)}」`, 270, 785);
+            }
+
+            ctx.fillStyle = '#FF69B4';
+            ctx.font = 'bold 18px sans-serif';
+            ctx.fillText('🌸 Sanrio Sweet Memories 🌸', 270, 835);
+        }
+
+        function downloadPosterImage() {
+            const canvas = document.getElementById('posterCanvas');
+            const evt = events.find(e => e.id === activePosterEventId);
+            if (!canvas || !evt) return;
+            const link = document.createElement('a');
+            link.download = `${evt.title}-倒數卡.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+            playCuteSound('success');
+            shootPinkConfetti();
+            showToast('已儲存靚靚海報相片！📸💖', '🎀');
+        }
+
+        function shareWhatsAppGreeting() {
+            const evt = events.find(e => e.id === activePosterEventId);
+            if (!evt) return;
+            const timing = getEventTiming(evt);
+            const msg = timing.isSameDay
+                ? `🎀 今日係「${evt.title}」正日呀！祝你開心幸福每一日！🎂🎉✨`
+                : `🌸 距離「${evt.title}」(${timing.formattedTarget}) 仲有 ${timing.days} 日咋！一齊期待啦～🐰💕`;
+            const waUrl = `https://wa.me/?text=${encodeURIComponent(msg)}`;
+            window.open(waUrl, '_blank');
+        }
+
+        // --- 每秒更新畫面計時 ---
         function tickCountdowns() {
             events.forEach(evt => {
                 const timing = getEventTiming(evt);
@@ -1038,12 +1879,7 @@
                 if (sEl) sEl.textContent = String(timing.seconds).padStart(2, '0');
             });
 
-            // 更新置頂 Hero Banner
-            let heroEvt = events.find(e => e.pinned);
-            if (!heroEvt && events.length > 0) {
-                const sorted = [...events].sort((a, b) => getEventTiming(a).targetDate - getEventTiming(b).targetDate);
-                heroEvt = sorted[0];
-            }
+            let heroEvt = events.find(e => e.pinned) || events[0];
             if (heroEvt) {
                 const timing = getEventTiming(heroEvt);
                 const hd = document.getElementById('hero-days');
@@ -1057,7 +1893,6 @@
             }
         }
 
-        // --- 新增 / 編輯 / 刪除 / 釘選功能 ---
         function openModal(editId = null) {
             playCuteSound('pop');
             const modal = document.getElementById('eventModal');
@@ -1072,7 +1907,8 @@
                 document.getElementById('eventTitle').value = evt.title;
                 document.getElementById('eventDate').value = evt.date;
                 document.getElementById('eventTime').value = evt.time || '00:00';
-                document.getElementById('eventCategory').value = evt.category || 'holiday';
+                document.getElementById('eventCategory').value = evt.category || 'birthday';
+                document.getElementById('eventCountMode').value = evt.countMode || 'countdown';
                 document.getElementById('eventNote').value = evt.note || '';
                 document.getElementById('eventRepeat').checked = !!evt.repeatYearly;
                 document.getElementById('eventPinned').checked = !!evt.pinned;
@@ -1080,10 +1916,11 @@
             } else {
                 document.getElementById('modalTitle').innerHTML = '<span>🎀</span> 新增倒數好日子';
                 document.getElementById('eventId').value = '';
-                // 預設揀聽日
                 const tmr = new Date(Date.now() + 86400000);
                 document.getElementById('eventDate').value = tmr.toISOString().split('T')[0];
                 document.getElementById('eventTime').value = '00:00';
+                document.getElementById('eventCountMode').value = 'countdown';
+                document.getElementById('eventRepeat').checked = true;
                 selectIcon('🐰');
             }
 
@@ -1103,7 +1940,7 @@
                 if (btn.dataset.icon === icon) {
                     btn.className = 'icon-opt p-2 text-xl rounded-xl border-2 border-melody-hot bg-melody-bg scale-105 transition-transform';
                 } else {
-                    btn.className = 'icon-opt p-2 text-xl rounded-xl border-2 border-transparent bg-melody-light hover:border-melody-pink transition-transform';
+                    btn.className = 'icon-opt p-2 text-xl rounded-xl border-2 border-transparent bg-melody-light transition-transform';
                 }
             });
         }
@@ -1115,41 +1952,34 @@
             const date = document.getElementById('eventDate').value;
             const time = document.getElementById('eventTime').value || '00:00';
             const category = document.getElementById('eventCategory').value;
+            const countMode = document.getElementById('eventCountMode').value;
             const note = document.getElementById('eventNote').value.trim();
             const repeatYearly = document.getElementById('eventRepeat').checked;
             const pinned = document.getElementById('eventPinned').checked;
 
             if (!title || !date) return;
-
-            if (pinned) {
-                events.forEach(item => item.pinned = false);
-            }
+            if (pinned) events.forEach(item => item.pinned = false);
 
             if (id) {
                 const idx = events.findIndex(item => item.id === id);
                 if (idx > -1) {
                     events[idx] = {
                         ...events[idx],
-                        title, date, time, category, note, repeatYearly, pinned,
+                        title, date, time, category, countMode, note, repeatYearly, pinned,
                         icon: selectedIcon
                     };
                 }
                 showToast(`已更新「${title}」！🌸`, selectedIcon);
             } else {
-                const newEvt = {
+                events.unshift({
                     id: 'evt_' + Date.now(),
-                    title,
-                    date,
-                    time,
-                    category,
+                    title, date, time, category, countMode,
                     icon: selectedIcon,
-                    note,
-                    repeatYearly,
-                    pinned,
+                    note, repeatYearly, pinned,
+                    checklist: getDefaultChecklist(category),
                     createdAt: new Date().toISOString()
-                };
-                events.unshift(newEvt);
-                showToast(`成功加入「${title}」倒數！🎉`, selectedIcon);
+                });
+                showToast(`成功加入「${title}」！🎉`, selectedIcon);
                 shootPinkConfetti();
             }
 
@@ -1185,31 +2015,22 @@
             showToast(willPin ? `已將「${target.title}」釘選置頂！📌` : '已取消釘選置頂', '📌');
         }
 
-        // 一鍵加入熱門預設節日或屋企人生日
         function addQuickPreset(title, dateOrMonthDay, category, icon, isYearly, customNote = '') {
             const fullDate = dateOrMonthDay.length === 5 ? getNextOccurrenceDateString(dateOrMonthDay) : dateOrMonthDay;
-            
-            // 檢查是否已經存在同名節日
-            const exists = events.some(e => e.title === title);
-            if (exists) {
+            if (events.some(e => e.title === title)) {
                 showToast(`清單入面已經有「${title}」啦～🐰`, '💡');
                 playCuteSound('pop');
                 return;
             }
-
             events.unshift({
                 id: 'evt_' + Date.now(),
-                title,
-                date: fullDate,
-                time: '00:00',
-                category,
-                icon,
+                title, date: fullDate, time: '00:00', category,
+                countMode: 'countdown', icon,
                 note: customNote || '一鍵加入嘅特別好日子 ✨',
-                repeatYearly: isYearly,
-                pinned: false,
+                repeatYearly: isYearly, pinned: false,
+                checklist: getDefaultChecklist(category),
                 createdAt: new Date().toISOString()
             });
-
             playCuteSound('success');
             shootPinkConfetti();
             saveToStorage();
@@ -1217,33 +2038,46 @@
             showToast(`已快速加入「${title}」！🎀`, icon);
         }
 
-        // 分類切換
         function setCategoryFilter(cat) {
             playCuteSound('pop');
             currentCategory = cat;
             document.querySelectorAll('.cat-tab').forEach(btn => {
                 if (btn.dataset.cat === cat) {
-                    btn.className = 'cat-tab active px-4 py-2 rounded-2xl text-xs sm:text-sm font-bold transition-all bg-melody-hot text-white shadow-sm';
+                    btn.className = 'cat-tab px-3.5 py-2 rounded-2xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all bg-melody-hot text-white shadow-sm';
                 } else {
-                    btn.className = 'cat-tab px-3.5 py-2 rounded-2xl text-xs sm:text-sm font-bold transition-all bg-white/80 text-melody-brown hover:bg-melody-bg border border-melody-pink';
+                    btn.className = 'cat-tab px-3.5 py-2 rounded-2xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all melody-card text-melody-brown';
                 }
             });
             renderEvents();
         }
 
-        // --- 備份與還原功能 ---
-        function openBackupModal() {
+        // --- 雲端同步與備份 Modal ---
+        function openCloudModal() {
             playCuteSound('pop');
-            const modal = document.getElementById('backupModal');
+            const modal = document.getElementById('cloudModal');
             document.getElementById('backupJsonArea').value = JSON.stringify(events, null, 2);
+            const savedRoom = localStorage.getItem('melody_sync_room_code');
+            if (savedRoom) document.getElementById('syncRoomInput').value = savedRoom;
             modal.classList.remove('hidden');
             modal.classList.add('flex');
         }
 
-        function closeBackupModal() {
-            const modal = document.getElementById('backupModal');
+        function closeCloudModal() {
+            const modal = document.getElementById('cloudModal');
             modal.classList.add('hidden');
             modal.classList.remove('flex');
+        }
+
+        function connectCloudSyncRoom() {
+            const code = document.getElementById('syncRoomInput').value.trim();
+            if (!code) {
+                showToast('請輸入一個專屬同步碼先呀～', '⚠️');
+                return;
+            }
+            if (typeof window.subscribeToSyncRoom === 'function') {
+                window.subscribeToSyncRoom(code, true);
+                window.pushEventsToCloud();
+            }
         }
 
         function copyBackupData() {
@@ -1262,15 +2096,13 @@
                     events = parsed;
                     saveToStorage();
                     renderEvents();
-                    closeBackupModal();
+                    closeCloudModal();
                     playCuteSound('success');
                     shootPinkConfetti();
-                    showToast('成功匯入倒數日子資料！🎉', '💾');
-                } else {
-                    showToast('備份碼格式唔正確呀～', '⚠️');
+                    showToast('成功還原倒數日子資料！🎉', '💾');
                 }
             } catch (e) {
-                showToast('無法解析備份碼，請檢查格式！', '⚠️');
+                showToast('備份碼格式唔正確呀～', '⚠️');
             }
         }
 
@@ -1278,14 +2110,26 @@
             events = getDefaultEvents();
             saveToStorage();
             renderEvents();
-            closeBackupModal();
+            closeCloudModal();
             playCuteSound('pop');
-            showToast('已還原預設 My Melody 節日清單！🌸', '🐰');
+            showToast('已還原預設屋企人生日與節日清單！🌸', '🐰');
         }
 
-        // --- 工具函數：Toast 同 防 XSS ---
+        function openIosGuideModal() {
+            playCuteSound('pop');
+            const modal = document.getElementById('iosGuideModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeIosGuideModal() {
+            const modal = document.getElementById('iosGuideModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
         let toastTimeout = null;
-        function showToast(message, icon = '🎀') {
+        window.showToast = function(message, icon = '🎀') {
             const box = document.getElementById('toastBox');
             document.getElementById('toastText').textContent = message;
             document.getElementById('toastIcon').textContent = icon;
@@ -1294,23 +2138,20 @@
             toastTimeout = setTimeout(() => {
                 box.classList.add('translate-y-24', 'opacity-0');
             }, 2800);
-        }
+        };
 
         function escapeHtml(str) {
             if (!str) return '';
-            return str.replace(/[&<>"']/g, function(m) {
-                return ({
-                    '&': '&amp;',
-                    '<': '&lt;',
-                    '>': '&gt;',
-                    '"': '&quot;',
-                    "'": '&#039;'
-                })[m];
-            });
+            return str.replace(/[&<>"']/g, m => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;'
+            })[m]);
         }
 
         // --- 初始化啟動 ---
         window.onload = function() {
+            setupAppleTouchIcon();
+            const savedTheme = localStorage.getItem(THEME_KEY) || 'melody';
+            setTheme(savedTheme);
             loadEvents();
             renderQuickPresetButtons();
             renderEvents();
