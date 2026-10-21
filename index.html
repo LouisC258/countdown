@@ -226,17 +226,17 @@
                 <div class="min-w-0 flex-1">
                     <div class="flex flex-wrap items-center gap-1.5 mb-1">
                         <span id="themeBadgeText" class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-melody-bg text-melody-dark text-[11px] font-bold border border-melody-pink">
-                            🎀 Sanrio Cute Timer
+                            🩺 Nurse Melody Timer
                         </span>
                         <span id="cloudStatusBadge" onclick="openCloudModal()" class="cursor-pointer inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-[11px] font-bold border border-emerald-300">
                             ☁️ 本機儲存
                         </span>
                     </div>
                     <h1 id="appMainTitle" class="text-xl sm:text-3xl font-black text-melody-dark tracking-tight truncate">
-                        My Melody 倒數日記
+                        金牛雞翼 🩺 夢幻倒數日記
                     </h1>
                     <p id="melodySpeech" class="text-xs sm:text-sm text-melody-softbrown font-medium mt-0.5 line-clamp-1">
-                        「一齊期待每一個特別又幸福嘅日子啦～♪」
+                        「金牛雞翼加油呀！無論出 Ward 定考 OSCE 都一定超順利～💉🌸」
                     </p>
                 </div>
             </div>
@@ -259,6 +259,9 @@
                 <div class="flex items-center gap-2">
                     <button onclick="openModal()" class="hidden sm:flex candy-btn text-white font-bold px-4 py-2 rounded-2xl items-center gap-1.5 text-sm">
                         <span>＋</span> 新增日子
+                    </button>
+                    <button onclick="openNurseHubModal()" class="candy-btn-secondary font-bold px-3 py-2 rounded-2xl text-xs sm:text-sm flex items-center gap-1 border-pink-400" title="Nursing 溫書番薯鐘 & 計藥小工具">
+                        <span>🩺</span> <span class="hidden md:inline">姑娘小幫手</span>
                     </button>
                     <button onclick="openCloudModal()" class="candy-btn-secondary font-bold px-3 py-2 rounded-2xl text-xs sm:text-sm flex items-center gap-1" title="跨裝置同步與備份">
                         <span>☁️</span> <span class="hidden md:inline">同步/備份</span>
@@ -284,15 +287,18 @@
             </div>
         </section>
 
-        <!-- 快速加入熱門節日與屋企人生日 (Categorized 1-Click Quick Presets) -->
-        <section class="melody-card rounded-3xl p-4 sm:p-5 space-y-3">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                <h2 class="text-xs sm:text-sm font-bold text-melody-dark flex items-center gap-1.5">
-                    <span>🍓</span> 屋企人生日 & 熱門節日一鍵快速加入：
+        <!-- 快速加入熱門節日、Nursing 專區與屋企人生日 (Categorized 1-Click Quick Presets) -->
+        <section class="melody-card rounded-3xl p-4 sm:p-5 space-y-3.5">
+            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-2.5 pb-2 border-b border-melody-pink/40">
+                <h2 class="text-xs sm:text-sm font-black text-melody-dark flex items-center gap-1.5 shrink-0">
+                    <span>🩺</span> 專為「金牛雞翼」準備嘅一鍵快速加入：
                 </h2>
-                <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1 sm:pb-0" id="presetFilterTabs">
-                    <button onclick="filterQuickPresets('family')" data-pcat="family" class="preset-tab px-3 py-1 rounded-full text-xs font-bold bg-melody-hot text-white shadow-sm whitespace-nowrap transition-all">
-                        👨‍👩‍👧‍👦 屋企人 (5)
+                <div class="flex flex-wrap items-center gap-1.5" id="presetFilterTabs">
+                    <button onclick="filterQuickPresets('nursing')" data-pcat="nursing" class="preset-tab px-3 py-1 rounded-full text-xs font-bold bg-melody-hot text-white shadow-sm whitespace-nowrap transition-all">
+                        🩺 Nursing 考試/出Ward
+                    </button>
+                    <button onclick="filterQuickPresets('family')" data-pcat="family" class="preset-tab px-3 py-1 rounded-full text-xs font-bold bg-melody-light text-melody-brown border border-melody-pink whitespace-nowrap transition-all">
+                        👨‍👩‍👧‍👦 屋企人生日 (5)
                     </button>
                     <button onclick="filterQuickPresets('sanrio')" data-pcat="sanrio" class="preset-tab px-3 py-1 rounded-full text-xs font-bold bg-melody-light text-melody-brown border border-melody-pink whitespace-nowrap transition-all">
                         🐰 Sanrio 好友
@@ -308,54 +314,63 @@
                     </button>
                 </div>
             </div>
-            <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1" id="quickPresetsContainer">
+            <!-- 改用 flex-wrap 自動換行，唔會再切斷右邊按鈕 -->
+            <div class="flex flex-wrap items-center gap-2 pt-0.5" id="quickPresetsContainer">
                 <!-- 由 JS 動態渲染快速加入按鈕 -->
             </div>
         </section>
 
-        <!-- 視角切換 + 分類篩選 + 搜尋與排序控制列 -->
-        <section class="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
-            <!-- 分類 Tabs -->
-            <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1 md:pb-0" id="categoryTabs">
-                <button onclick="setCategoryFilter('all')" data-cat="all" class="cat-tab px-3.5 py-2 rounded-2xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all bg-melody-hot text-white shadow-sm">
-                    ✨ 全部日子
+        <!-- 視角切換 + 分類篩選 + 搜尋與排序控制列 (分為上下兩層清晰結構，防止按鈕重疊或跌行) -->
+        <section class="melody-card rounded-3xl p-3.5 sm:p-4 space-y-3">
+            <!-- 第一層：分類篩選 Tabs -->
+            <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-0.5" id="categoryTabs">
+                <button onclick="setCategoryFilter('all')" data-cat="all" class="cat-tab px-3.5 py-1.5 rounded-2xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all bg-melody-hot text-white shadow-sm shrink-0">
+                    ✨ 全部
                 </button>
-                <button onclick="setCategoryFilter('birthday')" data-cat="birthday" class="cat-tab px-3.5 py-2 rounded-2xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all melody-card text-melody-brown">
-                    🎂 生日
+                <button onclick="setCategoryFilter('exam')" data-cat="exam" class="cat-tab px-3.5 py-1.5 rounded-2xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all bg-melody-light text-melody-brown border border-melody-pink shrink-0">
+                    📚 考試/溫書
                 </button>
-                <button onclick="setCategoryFilter('holiday')" data-cat="holiday" class="cat-tab px-3.5 py-2 rounded-2xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all melody-card text-melody-brown">
+                <button onclick="setCategoryFilter('clinical')" data-cat="clinical" class="cat-tab px-3.5 py-1.5 rounded-2xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all bg-melody-light text-melody-brown border border-melody-pink shrink-0">
+                    🏥 出Ward/實習
+                </button>
+                <button onclick="setCategoryFilter('birthday')" data-cat="birthday" class="cat-tab px-3.5 py-1.5 rounded-2xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all bg-melody-light text-melody-brown border border-melody-pink shrink-0">
+                    🎂 屋企人生日
+                </button>
+                <button onclick="setCategoryFilter('holiday')" data-cat="holiday" class="cat-tab px-3.5 py-1.5 rounded-2xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all bg-melody-light text-melody-brown border border-melody-pink shrink-0">
                     🌸 節日
                 </button>
-                <button onclick="setCategoryFilter('anniversary')" data-cat="anniversary" class="cat-tab px-3.5 py-2 rounded-2xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all melody-card text-melody-brown">
+                <button onclick="setCategoryFilter('anniversary')" data-cat="anniversary" class="cat-tab px-3.5 py-1.5 rounded-2xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all bg-melody-light text-melody-brown border border-melody-pink shrink-0">
                     💖 紀念日
                 </button>
-                <button onclick="setCategoryFilter('trip')" data-cat="trip" class="cat-tab px-3.5 py-2 rounded-2xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all melody-card text-melody-brown">
-                    ✈️ 旅行/玩樂
+                <button onclick="setCategoryFilter('trip')" data-cat="trip" class="cat-tab px-3.5 py-1.5 rounded-2xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all bg-melody-light text-melody-brown border border-melody-pink shrink-0">
+                    ✈️ 旅行/放假
                 </button>
             </div>
 
-            <!-- 視角切換 (卡片 vs 12個月時間軸) + 搜尋與排序 -->
-            <div class="flex flex-wrap items-center gap-2">
-                <div class="flex items-center bg-melody-bg/90 p-1 rounded-2xl border border-melody-pink">
-                    <button onclick="setViewMode('grid')" id="viewBtn-grid" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-melody-hot text-white shadow-sm">
+            <!-- 第二層：視角切換 (卡片 vs 12個月時間軸) + 搜尋框 + 排序選單 (同行對齊) -->
+            <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 pt-2.5 border-t border-melody-pink/40">
+                <div class="flex items-center bg-melody-bg/90 p-1 rounded-2xl border border-melody-pink self-start">
+                    <button onclick="setViewMode('grid')" id="viewBtn-grid" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-melody-hot text-white shadow-sm whitespace-nowrap">
                         🗂️ 卡片牆
                     </button>
-                    <button onclick="setViewMode('calendar')" id="viewBtn-calendar" class="px-3 py-1.5 rounded-xl text-xs font-bold text-melody-brown">
+                    <button onclick="setViewMode('calendar')" id="viewBtn-calendar" class="px-3.5 py-1.5 rounded-xl text-xs font-bold text-melody-brown whitespace-nowrap">
                         🗓️ 12個月時間軸
                     </button>
                 </div>
 
-                <div class="relative flex-grow sm:flex-grow-0">
-                    <input type="text" id="searchInput" oninput="renderEvents()" placeholder="搜尋日子..." 
-                        class="w-full sm:w-40 pl-8 pr-3 py-1.5 rounded-2xl border-2 border-melody-pink bg-melody-light text-sm focus:outline-none focus:border-melody-hot text-melody-brown placeholder-melody-softbrown/70">
-                    <span class="absolute left-2.5 top-2 text-xs">🔍</span>
-                </div>
+                <div class="flex items-center gap-2 flex-1 sm:justify-end">
+                    <div class="relative flex-1 sm:flex-initial sm:w-52">
+                        <input type="text" id="searchInput" oninput="renderEvents()" placeholder="搜尋日子或備註..." 
+                            class="w-full pl-8 pr-3 py-1.5 rounded-2xl border-2 border-melody-pink bg-melody-light text-xs sm:text-sm focus:outline-none focus:border-melody-hot text-melody-brown placeholder-melody-softbrown/70">
+                        <span class="absolute left-2.5 top-1/2 -translate-y-1/2 text-xs">🔍</span>
+                    </div>
 
-                <select id="sortSelect" onchange="renderEvents()" class="px-3 py-1.5 rounded-2xl border-2 border-melody-pink bg-melody-light text-xs font-bold text-melody-brown focus:outline-none cursor-pointer">
-                    <option value="nearest">⏳ 最快到先排</option>
-                    <option value="furthest">🗓️ 最遠先排</option>
-                    <option value="name">🔤 按名稱排</option>
-                </select>
+                    <select id="sortSelect" onchange="renderEvents()" class="px-3 py-1.5 rounded-2xl border-2 border-melody-pink bg-melody-light text-xs font-bold text-melody-brown focus:outline-none cursor-pointer shrink-0">
+                        <option value="nearest">⏳ 最快到先排</option>
+                        <option value="furthest">🗓️ 最遠先排</option>
+                        <option value="name">🔤 按名稱排</option>
+                    </select>
+                </div>
             </div>
         </section>
 
@@ -386,25 +401,25 @@
     <!-- iPhone / iPad 底部懸浮導航欄 (Bottom App Tab Bar) -->
     <nav class="fixed bottom-0 left-0 right-0 z-40 melody-card border-t-3 border-b-0 border-x-0 rounded-t-3xl bottom-nav-safe px-3 pt-2 shadow-2xl">
         <div class="max-w-lg mx-auto flex items-center justify-around">
-            <button onclick="switchBottomTab('home')" id="bnav-home" class="flex flex-col items-center gap-0.5 py-1 px-3 rounded-2xl text-melody-hot font-bold transition-transform active:scale-90">
+            <button onclick="switchBottomTab('home')" id="bnav-home" class="flex flex-col items-center gap-0.5 py-1 px-2.5 rounded-2xl text-melody-hot font-bold transition-transform active:scale-90">
                 <span class="text-xl">🏠</span>
                 <span class="text-[11px]">全部倒數</span>
             </button>
-            <button onclick="switchBottomTab('family')" id="bnav-family" class="flex flex-col items-center gap-0.5 py-1 px-3 rounded-2xl text-melody-softbrown font-bold transition-transform active:scale-90">
-                <span class="text-xl">🎂</span>
-                <span class="text-[11px]">屋企人</span>
+            <button onclick="switchBottomTab('nursing')" id="bnav-nursing" class="flex flex-col items-center gap-0.5 py-1 px-2.5 rounded-2xl text-melody-softbrown font-bold transition-transform active:scale-90">
+                <span class="text-xl">🩺</span>
+                <span class="text-[11px]">Nursing</span>
             </button>
             <!-- 中央立體大「＋」按鈕 -->
             <button onclick="openModal()" class="candy-btn text-white w-12 h-12 rounded-2xl flex items-center justify-center text-2xl font-black -mt-5 shadow-lg border-2 border-white">
                 ＋
             </button>
-            <button onclick="switchBottomTab('calendar')" id="bnav-calendar" class="flex flex-col items-center gap-0.5 py-1 px-3 rounded-2xl text-melody-softbrown font-bold transition-transform active:scale-90">
-                <span class="text-xl">🗓️</span>
-                <span class="text-[11px]">12個月曆</span>
+            <button onclick="switchBottomTab('family')" id="bnav-family" class="flex flex-col items-center gap-0.5 py-1 px-2.5 rounded-2xl text-melody-softbrown font-bold transition-transform active:scale-90">
+                <span class="text-xl">🎂</span>
+                <span class="text-[11px]">屋企人</span>
             </button>
-            <button onclick="openCloudModal()" id="bnav-cloud" class="flex flex-col items-center gap-0.5 py-1 px-3 rounded-2xl text-melody-softbrown font-bold transition-transform active:scale-90">
-                <span class="text-xl">☁️</span>
-                <span class="text-[11px]">同步/備份</span>
+            <button onclick="openNurseHubModal()" id="bnav-hub" class="flex flex-col items-center gap-0.5 py-1 px-2.5 rounded-2xl text-melody-softbrown font-bold transition-transform active:scale-90">
+                <span class="text-xl">💊</span>
+                <span class="text-[11px]">姑娘幫手</span>
             </button>
         </div>
     </nav>
@@ -448,10 +463,12 @@
                     <div>
                         <label class="block text-xs sm:text-sm font-bold text-melody-brown mb-1">🏷️ 分類標籤</label>
                         <select id="eventCategory" class="w-full px-3 py-2.5 rounded-2xl border-2 border-melody-pink focus:border-melody-hot focus:outline-none text-melody-brown font-bold bg-melody-light">
+                            <option value="exam">📚 考試 / 溫書 / 功課</option>
+                            <option value="clinical">🏥 出Ward / 臨床實習</option>
                             <option value="birthday">🎂 生日派對</option>
                             <option value="holiday">🌸 節日慶典</option>
                             <option value="anniversary">💖 甜蜜紀念日</option>
-                            <option value="trip">✈️ 旅行 / 出遊</option>
+                            <option value="trip">✈️ 旅行 / 放假出遊</option>
                         </select>
                     </div>
                     <div>
@@ -464,26 +481,26 @@
                 </div>
 
                 <div>
-                    <label class="block text-xs sm:text-sm font-bold text-melody-brown mb-1.5">🐰 揀個 Cute Icon</label>
+                    <label class="block text-xs sm:text-sm font-bold text-melody-brown mb-1.5">🐰 揀個 Cute / Nursing Icon</label>
                     <div class="grid grid-cols-6 gap-2" id="iconPicker">
-                        <button type="button" onclick="selectIcon('🐰')" data-icon="🐰" class="icon-opt p-2 text-xl rounded-xl border-2 border-melody-hot bg-melody-bg">🐰</button>
-                        <button type="button" onclick="selectIcon('🎀')" data-icon="🎀" class="icon-opt p-2 text-xl rounded-xl border-2 border-transparent bg-melody-light">🎀</button>
-                        <button type="button" onclick="selectIcon('🍓')" data-icon="🍓" class="icon-opt p-2 text-xl rounded-xl border-2 border-transparent bg-melody-light">🍓</button>
+                        <button type="button" onclick="selectIcon('🩺')" data-icon="🩺" class="icon-opt p-2 text-xl rounded-xl border-2 border-melody-hot bg-melody-bg">🩺</button>
+                        <button type="button" onclick="selectIcon('💉')" data-icon="💉" class="icon-opt p-2 text-xl rounded-xl border-2 border-transparent bg-melody-light">💉</button>
+                        <button type="button" onclick="selectIcon('💊')" data-icon="💊" class="icon-opt p-2 text-xl rounded-xl border-2 border-transparent bg-melody-light">💊</button>
+                        <button type="button" onclick="selectIcon('🏥')" data-icon="🏥" class="icon-opt p-2 text-xl rounded-xl border-2 border-transparent bg-melody-light">🏥</button>
+                        <button type="button" onclick="selectIcon('📚')" data-icon="📚" class="icon-opt p-2 text-xl rounded-xl border-2 border-transparent bg-melody-light">📚</button>
+                        <button type="button" onclick="selectIcon('🎓')" data-icon="🎓" class="icon-opt p-2 text-xl rounded-xl border-2 border-transparent bg-melody-light">🎓</button>
+                        <button type="button" onclick="selectIcon('🐰')" data-icon="🐰" class="icon-opt p-2 text-xl rounded-xl border-2 border-transparent bg-melody-light">🐰</button>
                         <button type="button" onclick="selectIcon('🎂')" data-icon="🎂" class="icon-opt p-2 text-xl rounded-xl border-2 border-transparent bg-melody-light">🎂</button>
-                        <button type="button" onclick="selectIcon('💖')" data-icon="💖" class="icon-opt p-2 text-xl rounded-xl border-2 border-transparent bg-melody-light">💖</button>
-                        <button type="button" onclick="selectIcon('🌸')" data-icon="🌸" class="icon-opt p-2 text-xl rounded-xl border-2 border-transparent bg-melody-light">🌸</button>
-                        <button type="button" onclick="selectIcon('🎄')" data-icon="🎄" class="icon-opt p-2 text-xl rounded-xl border-2 border-transparent bg-melody-light">🎄</button>
+                        <button type="button" onclick="selectIcon('🍗')" data-icon="🍗" class="icon-opt p-2 text-xl rounded-xl border-2 border-transparent bg-melody-light">🍗</button>
+                        <button type="button" onclick="selectIcon('🎀')" data-icon="🎀" class="icon-opt p-2 text-xl rounded-xl border-2 border-transparent bg-melody-light">🎀</button>
                         <button type="button" onclick="selectIcon('✈️')" data-icon="✈️" class="icon-opt p-2 text-xl rounded-xl border-2 border-transparent bg-melody-light">✈️</button>
-                        <button type="button" onclick="selectIcon('🍰')" data-icon="🍰" class="icon-opt p-2 text-xl rounded-xl border-2 border-transparent bg-melody-light">🍰</button>
-                        <button type="button" onclick="selectIcon('🎆')" data-icon="🎆" class="icon-opt p-2 text-xl rounded-xl border-2 border-transparent bg-melody-light">🎆</button>
-                        <button type="button" onclick="selectIcon('🎁')" data-icon="🎁" class="icon-opt p-2 text-xl rounded-xl border-2 border-transparent bg-melody-light">🎁</button>
                         <button type="button" onclick="selectIcon('😈')" data-icon="😈" class="icon-opt p-2 text-xl rounded-xl border-2 border-transparent bg-melody-light">😈</button>
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-xs sm:text-sm font-bold text-melody-brown mb-1">📝 小備註 / 禮物 Idea (選填)</label>
-                    <input type="text" id="eventNote" maxlength="60" placeholder="例如：記得訂士多啤梨蛋糕、買禮物..."
+                    <label class="block text-xs sm:text-sm font-bold text-melody-brown mb-1">📝 小備註 / 溫書重點 / 禮物 Idea (選填)</label>
+                    <input type="text" id="eventNote" maxlength="60" placeholder="例如：記得溫 Aseptic Technique、帶聽診器、食雞翼慶祝..."
                         class="w-full px-3.5 py-2 rounded-2xl border-2 border-melody-pink focus:border-melody-hot focus:outline-none text-melody-brown bg-melody-light">
                 </div>
 
@@ -615,7 +632,7 @@
     <div id="iosGuideModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
         <div class="melody-card rounded-3xl max-w-sm w-full p-6 relative text-center space-y-4">
             <div class="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-pink-400 to-rose-500 p-2 shadow-lg border-2 border-white flex items-center justify-center text-3xl">
-                🐰
+                🩺
             </div>
             <h3 class="text-lg font-black text-melody-dark">變身 iPhone / iPad 真 App！✨</h3>
             <div class="text-left text-xs sm:text-sm space-y-2.5 bg-melody-light p-4 rounded-2xl border border-melody-pink text-melody-brown">
@@ -627,6 +644,114 @@
             <button onclick="closeIosGuideModal()" class="w-full candy-btn text-white py-2.5 rounded-2xl font-bold text-sm">
                 知道啦～超方便！💖
             </button>
+        </div>
+    </div>
+
+    <!-- 6. 🩺 準白衣天使「姑娘小幫手」Modal (溫書番薯鐘 + 臨床計藥/滴速計算機 + 出Ward貼士) -->
+    <div id="nurseHubModal" class="fixed inset-0 z-50 hidden items-end sm:items-center justify-center sm:p-4 bg-black/50 backdrop-blur-sm">
+        <div class="melody-card rounded-t-3xl sm:rounded-3xl max-w-lg w-full p-5 sm:p-6 relative max-h-[90vh] overflow-y-auto space-y-4">
+            <div class="flex items-center justify-between pb-2.5 border-b-2 border-dashed border-melody-pink">
+                <div>
+                    <h3 class="text-lg sm:text-xl font-black text-melody-dark flex items-center gap-2">
+                        <span>🩺</span> 金牛雞翼 ‧ 姑娘小幫手專區
+                    </h3>
+                    <p class="text-xs text-melody-softbrown">專為 Nursing 溫書、考 Drug Calc 同埋出 Ward 實習而設 ✨</p>
+                </div>
+                <button onclick="closeNurseHubModal()" class="w-8 h-8 rounded-full bg-melody-bg text-melody-dark font-bold flex items-center justify-center">✕</button>
+            </div>
+
+            <!-- 功能 1：🍅 My Melody 25分鐘溫書番薯鐘 (Pomodoro Study Timer) -->
+            <div class="p-4 rounded-2xl bg-melody-light border-2 border-melody-pink space-y-3">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs sm:text-sm font-black text-melody-dark flex items-center gap-1.5">
+                        🍅 溫書專注番薯鐘 (Pomodoro)
+                    </span>
+                    <div class="flex gap-1">
+                        <button onclick="setPomoMinutes(25, '專注溫書 📚')" class="px-2 py-0.5 rounded-lg bg-melody-bg text-melody-dark text-[11px] font-bold border border-melody-pink">25分 溫書</button>
+                        <button onclick="setPomoMinutes(15, '練 OSCE 🩺')" class="px-2 py-0.5 rounded-lg bg-melody-bg text-melody-dark text-[11px] font-bold border border-melody-pink">15分 OSCE</button>
+                        <button onclick="setPomoMinutes(5, '小休飲水 🍓')" class="px-2 py-0.5 rounded-lg bg-melody-bg text-melody-dark text-[11px] font-bold border border-melody-pink">5分 小休</button>
+                    </div>
+                </div>
+                <div class="flex items-center justify-between bg-white/80 dark:bg-black/20 p-3 rounded-2xl border border-melody-pink">
+                    <div>
+                        <div id="pomoModeLabel" class="text-[11px] font-bold text-melody-softbrown">專注溫書模式 📚</div>
+                        <div id="pomoDisplay" class="text-3xl sm:text-4xl font-black text-melody-hot font-mono tracking-wider">25:00</div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button onclick="togglePomoTimer()" id="pomoStartBtn" class="candy-btn text-white px-4 py-2 rounded-xl text-xs font-bold">
+                            ▶️ 開始
+                        </button>
+                        <button onclick="resetPomoTimer()" class="candy-btn-secondary px-3 py-2 rounded-xl text-xs font-bold">
+                            🔄 重設
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 功能 2：💊 Drug Calculation 臨床計藥 & IV 點滴滴速小工具 -->
+            <div class="p-4 rounded-2xl bg-melody-light border-2 border-melody-pink space-y-3">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs sm:text-sm font-black text-melody-dark flex items-center gap-1.5">
+                        💊 Drug Calculation 溫書對答案神器
+                    </span>
+                    <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-300">公式：(Want ÷ Have) × Vol</span>
+                </div>
+
+                <!-- 藥物劑量計算 -->
+                <div class="grid grid-cols-3 gap-2">
+                    <div>
+                        <label class="block text-[11px] font-bold text-melody-brown mb-1">處方劑量 (Want)</label>
+                        <input type="number" step="any" id="drugWant" oninput="calcDrugDosage()" placeholder="如: 500"
+                            class="w-full px-2.5 py-1.5 rounded-xl border border-melody-pink bg-white text-gray-800 text-sm font-bold focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-melody-brown mb-1">現有劑量 (Have)</label>
+                        <input type="number" step="any" id="drugHave" oninput="calcDrugDosage()" placeholder="如: 250"
+                            class="w-full px-2.5 py-1.5 rounded-xl border border-melody-pink bg-white text-gray-800 text-sm font-bold focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-melody-brown mb-1">溶液容量 (mL)</label>
+                        <input type="number" step="any" id="drugVol" value="1" oninput="calcDrugDosage()" placeholder="如: 5"
+                            class="w-full px-2.5 py-1.5 rounded-xl border border-melody-pink bg-white text-gray-800 text-sm font-bold focus:outline-none">
+                    </div>
+                </div>
+                <div id="drugResultBox" class="p-2.5 rounded-xl bg-melody-bg/80 border border-melody-pink text-center text-xs sm:text-sm font-black text-melody-dark">
+                    💉 所需抽取容量 / 粒數：<span class="text-melody-hot text-base">--</span>
+                </div>
+
+                <!-- IV Drip Rate 點滴滴速計算 -->
+                <div class="pt-2 border-t border-melody-pink/40 grid grid-cols-3 gap-2">
+                    <div>
+                        <label class="block text-[11px] font-bold text-melody-brown mb-1">總輸液量 (mL)</label>
+                        <input type="number" step="any" id="ivVol" oninput="calcIvRate()" placeholder="如: 1000"
+                            class="w-full px-2.5 py-1.5 rounded-xl border border-melody-pink bg-white text-gray-800 text-sm font-bold focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-melody-brown mb-1">時間 (小時 hr)</label>
+                        <input type="number" step="any" id="ivHours" oninput="calcIvRate()" placeholder="如: 8"
+                            class="w-full px-2.5 py-1.5 rounded-xl border border-melody-pink bg-white text-gray-800 text-sm font-bold focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-melody-brown mb-1">Drop Factor</label>
+                        <select id="ivDropFactor" onchange="calcIvRate()" class="w-full px-2 py-1.5 rounded-xl border border-melody-pink bg-white text-gray-800 text-sm font-bold focus:outline-none">
+                            <option value="20">20 gtt/mL</option>
+                            <option value="15">15 gtt/mL</option>
+                            <option value="60">60 (Micro)</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="ivResultBox" class="p-2.5 rounded-xl bg-melody-bg/80 border border-melody-pink text-center text-xs sm:text-sm font-black text-melody-dark">
+                    💧 輸液速率：<span class="text-melody-hot">-- mL/hr</span> ｜ 滴速：<span class="text-melody-hot">-- gtt/min</span>
+                </div>
+            </div>
+
+            <!-- 功能 3：🏥 出 Ward 隨身錦囊提示 -->
+            <div class="p-3.5 rounded-2xl bg-melody-bg/50 border border-melody-pink text-xs space-y-1.5 text-melody-brown">
+                <div class="font-black text-melody-dark">🎒 出 Ward 袋口必備 Check-up：</div>
+                <p>✅ <strong>三色筆 + 黑色原子筆</strong>（寫紀錄/交更必備） · ✅ <strong>護士錶</strong>（數 Pulse / RR）</p>
+                <p>✅ <strong>醫療較剪 + Penlight 瞳孔電筒</strong> · ✅ <strong>記事細簿仔 (Pocketbook) + 膠紙</strong></p>
+                <p class="text-melody-hot font-bold pt-0.5">🍗 最緊要：放工記得食返隻美美嘅雞翼獎勵自己！</p>
+            </div>
         </div>
     </div>
 
@@ -743,13 +868,13 @@
         const THEME_KEY = 'melody_theme_v1';
         let currentCategory = 'all';
         let currentViewMode = 'grid'; // 'grid' | 'calendar'
-        let selectedIcon = '🐰';
+        let selectedIcon = '🩺';
         let soundEnabled = true;
         let synth = null;
         let activeChecklistEventId = null;
         let activePosterEventId = null;
 
-        // 三款 Sanrio 主角手繪級 SVG
+        // 三款 Sanrio 主角手繪級 SVG（My Melody 戴上可愛白衣天使護士帽！）
         const SANRIO_MASCOTS = {
             melody: `
                 <svg viewBox="0 0 200 200" class="w-full h-full drop-shadow-md">
@@ -758,13 +883,19 @@
                     <ellipse cx="100" cy="128" rx="64" ry="52" fill="#FF69B4" stroke="#6D4C53" stroke-width="5"/>
                     <ellipse cx="100" cy="136" rx="46" ry="36" fill="#FFFFFF" stroke="#6D4C53" stroke-width="4"/>
                     <path d="M92 98 Q100 108 108 98" fill="#FF69B4" stroke="#6D4C53" stroke-width="4" stroke-linecap="round"/>
-                    <g transform="translate(132, 85) rotate(15)">
-                        <circle cx="0" cy="-12" r="9" fill="#FFFFFF" stroke="#6D4C53" stroke-width="3.5"/>
-                        <circle cx="11" cy="-4" r="9" fill="#FFFFFF" stroke="#6D4C53" stroke-width="3.5"/>
-                        <circle cx="7" cy="10" r="9" fill="#FFFFFF" stroke="#6D4C53" stroke-width="3.5"/>
-                        <circle cx="-7" cy="10" r="9" fill="#FFFFFF" stroke="#6D4C53" stroke-width="3.5"/>
-                        <circle cx="-11" cy="-4" r="9" fill="#FFFFFF" stroke="#6D4C53" stroke-width="3.5"/>
-                        <circle cx="0" cy="0" r="7" fill="#FFDF5B" stroke="#6D4C53" stroke-width="3.5"/>
+                    <!-- 護士帽 (Nurse Cap with Pink Cross) -->
+                    <g transform="translate(100, 74)">
+                        <polygon points="-28,10 -22,-12 22,-12 28,10" fill="#FFFFFF" stroke="#6D4C53" stroke-width="3.5" stroke-linejoin="round"/>
+                        <rect x="-3" y="-7" width="6" height="12" rx="1" fill="#FF69B4"/>
+                        <rect x="-6" y="-4" width="12" height="6" rx="1" fill="#FF69B4"/>
+                    </g>
+                    <g transform="translate(136, 90) rotate(15)">
+                        <circle cx="0" cy="-10" r="7.5" fill="#FFFFFF" stroke="#6D4C53" stroke-width="3"/>
+                        <circle cx="9" cy="-3" r="7.5" fill="#FFFFFF" stroke="#6D4C53" stroke-width="3"/>
+                        <circle cx="6" cy="8" r="7.5" fill="#FFFFFF" stroke="#6D4C53" stroke-width="3"/>
+                        <circle cx="-6" cy="8" r="7.5" fill="#FFFFFF" stroke="#6D4C53" stroke-width="3"/>
+                        <circle cx="-9" cy="-3" r="7.5" fill="#FFFFFF" stroke="#6D4C53" stroke-width="3"/>
+                        <circle cx="0" cy="0" r="5.5" fill="#FFDF5B" stroke="#6D4C53" stroke-width="3"/>
                     </g>
                     <ellipse cx="75" cy="136" rx="4.5" ry="6.5" fill="#6D4C53"/>
                     <circle cx="73.5" cy="134" r="1.5" fill="#FFFFFF"/>
@@ -845,23 +976,33 @@
             const now = new Date();
             const currentYear = now.getFullYear();
             let target = new Date(`${currentYear}-${monthDay}T00:00:00`);
-            if (target < now) {
+            const isToday = now.getFullYear() === target.getFullYear() &&
+                            now.getMonth() === target.getMonth() &&
+                            now.getDate() === target.getDate();
+            if (target < now && !isToday) {
                 target = new Date(`${currentYear + 1}-${monthDay}T00:00:00`);
             }
             const yyyy = target.getFullYear();
-            const mm = String(target.getMonth() + 1).padStart(2, '0');
-            const dd = String(target.getDate()).padStart(2, '0');
-            return `${yyyy}-${mm}-${dd}`;
+            return `${yyyy}-${monthDay}`;
         }
 
-        // 完整快速加入資料庫 (包含屋企人生日 5月14日 修正版)
+        // 完整快速加入資料庫 (移除標題開頭重複嘅 Emoji，避免出現 🩺 🩺 雙重圖示)
         const QUICK_PRESETS_CATALOG = [
+            // 🩺 Nursing 護理系專屬 (專為金牛雞翼而設)
+            { title: 'OSCE 臨床技能實操試', date: '2026-12-10', category: 'exam', icon: '🩺', isYearly: false, pcat: 'nursing', note: '洗手 7 Steps、對病人手帶 (3核5對)、Aseptic Technique 一 Take Pass！💪✨' },
+            { title: 'Drug Calculation 計藥試', date: '2026-11-25', category: 'exam', icon: '💊', isYearly: false, pcat: 'nursing', note: '目標 100 分滿分合格！小心睇清楚 mg 同 mcg 單位換算 🎯' },
+            { title: '出 Ward 實習 (Practicum) 開始', date: '2027-01-11', category: 'clinical', icon: '🏥', isYearly: false, pcat: 'nursing', note: '準白衣天使出動！執齊三色筆、護士錶、較剪同電筒，加油！💉' },
+            { title: '出 Ward 實習完滿結束 (Last Day!)', date: '2027-02-26', category: 'clinical', icon: '🍗', isYearly: false, pcat: 'nursing', note: '終於捱完個 Block 啦！放工即刻去食大餐同埋食雞翼慶祝 🍗🎉' },
+            { title: 'Nursing 學期尾筆試 (Final Exam)', date: '2026-12-18', category: 'exam', icon: '📚', isYearly: false, pcat: 'nursing', note: '溫熟 Anatomy、Physiology 同 Pharmacology，金牛雞翼一定勁過關！💯' },
+            { title: '交 Nursing Care Plan / Case Study', date: '2026-11-18', category: 'exam', icon: '💉', isYearly: false, pcat: 'nursing', note: '寫好 Nursing Diagnosis、Intervention 同 Evaluation，準時 Submit！💻' },
+            { title: 'RN 註冊護士畢業禮 (Pinning Ceremony)', date: '2028-06-15', category: 'anniversary', icon: '🎓', isYearly: false, pcat: 'nursing', note: '正式成為 Registered Nurse 白衣天使嘅大日子！全家人為你驕傲 💖🌸' },
+
             // 屋企人生日 (Family)
-            { title: '自己 (金牛雞翼) 生日 🍗🎂', date: '05-14', category: 'birthday', icon: '🎂', isYearly: true, pcat: 'family', note: '5月14日正宗金牛座！祝自己生日快樂，買份大禮物同食雞翼獎勵自己 ✨🍗' },
-            { title: 'Dad 生日 👨🏻🎂', date: '05-26', category: 'birthday', icon: '🎁', isYearly: true, pcat: 'family', note: '同自己一樣係5月壽星！記得訂檯同爸爸食好西慶祝 🍽️' },
-            { title: 'Mum 生日 👩🏻💐', date: '06-29', category: 'birthday', icon: '🌸', isYearly: true, pcat: 'family', note: '準備靚靚生日蛋糕同禮物送比媽咪 💖🎂' },
-            { title: '阿哥生日 👦🏻🎂', date: '07-20', category: 'birthday', icon: '🍰', isYearly: true, pcat: 'family', note: '同阿哥慶祝生日，食餐好嘅！🎉' },
-            { title: '細妹 (處女嘉研) 生日 👧🏻🎀', date: '09-22', category: 'birthday', icon: '🎀', isYearly: true, pcat: 'family', note: '處女座細妹嘉研生日大快樂！準備禮物同蛋糕 🍓' },
+            { title: '金牛雞翼 (自己) 生日 🍗', date: '05-14', category: 'birthday', icon: '🎂', isYearly: true, pcat: 'family', note: '5月14日正宗金牛座白衣天使！祝自己生日快樂，食雞翼收大禮物 ✨🍗' },
+            { title: 'Dad 生日 👨🏻', date: '05-26', category: 'birthday', icon: '🎁', isYearly: true, pcat: 'family', note: '同金牛雞翼一樣係5月壽星！記得訂檯同爸爸食好西慶祝 🍽️' },
+            { title: 'Mum 生日 👩🏻', date: '06-29', category: 'birthday', icon: '🌸', isYearly: true, pcat: 'family', note: '準備靚靚生日蛋糕同禮物送比媽咪 💖🎂' },
+            { title: '阿哥生日 👦🏻', date: '07-20', category: 'birthday', icon: '🍰', isYearly: true, pcat: 'family', note: '同錫晒你嘅阿哥慶祝生日，食餐好嘅！🎉' },
+            { title: '處女嘉研生日 👧🏻', date: '09-22', category: 'birthday', icon: '🎀', isYearly: true, pcat: 'family', note: '9月22日處女座嘉研生日大快樂！準備禮物同蛋糕 🍓' },
 
             // Sanrio 好友生日
             { title: 'My Melody 生日 🐰', date: '01-18', category: 'birthday', icon: '🐰', isYearly: true, pcat: 'sanrio', note: '準備杏仁磅蛋糕同士多啤梨慶祝！🍓' },
@@ -888,8 +1029,32 @@
             { title: '雙11 購物狂歡節 🛍️', date: '11-11', category: 'holiday', icon: '✨', isYearly: true, pcat: 'love', note: '清空購物車買心頭好！🛒' }
         ];
 
-        // 預設生日準備清單項目
-        function getDefaultChecklist(cat) {
+        // 預設各分類準備清單項目 (支援 Nursing 考試 & 出Ward 專屬 Checklist！)
+        function getDefaultChecklist(cat, title = '') {
+            if (cat === 'exam') {
+                if (title.includes('OSCE')) {
+                    return [
+                        { id: 'e1', text: '練熟 Aseptic Technique (無菌換症) 🧤', done: false },
+                        { id: 'e2', text: '背熟 3核5對 (Three Checks, Five Rights) 📋', done: false },
+                        { id: 'e3', text: '練習洗手法 7 Steps + 量 Vital Signs 🩺', done: false },
+                        { id: 'e4', text: '準備整齊姑娘制服、髮網同護士錶 ⌚', done: false }
+                    ];
+                }
+                return [
+                    { id: 'e1', text: '整理 Lecture Notes 溫書重點筆記 📚', done: false },
+                    { id: 'e2', text: '操練 Past Paper / Drug Calc 計數題 💊', done: false },
+                    { id: 'e3', text: '溫習常考 Pharmacology 藥物副作用 💉', done: false },
+                    { id: 'e4', text: '考前一晚早啲瞓，養足精神應試 😴', done: false }
+                ];
+            }
+            if (cat === 'clinical') {
+                return [
+                    { id: 'w1', text: '洗乾淨及熨好姑娘衫制服 + 髮網 👗', done: false },
+                    { id: 'w2', text: '執齊三色筆、黑筆、護士錶、醫療較剪、Penlight 🔦', done: false },
+                    { id: 'w3', text: '帶定 Pocketbook 記事簿仔同水樽 📓', done: false },
+                    { id: 'w4', text: 'Check 清楚聽日返 A更、P更 定 N更鬧鐘 ⏰', done: false }
+                ];
+            }
             if (cat === 'birthday') {
                 return [
                     { id: 'c1', text: '揀定同買生日禮物 🎁', done: false },
@@ -904,33 +1069,61 @@
             ];
         }
 
-        // 預設可愛節日與屋企人生日清單
+        // 預設可愛節日、Nursing 倒數與屋企人生日清單
         function getDefaultEvents() {
             const nowIso = new Date().toISOString();
             return [
                 {
                     id: 'evt_self_bday',
-                    title: '自己 (金牛雞翼) 生日 🍗🎂',
+                    title: '金牛雞翼 (自己) 生日 🍗',
                     date: getNextOccurrenceDateString('05-14'),
                     time: '00:00',
                     category: 'birthday',
                     countMode: 'countdown',
                     icon: '🎂',
-                    note: '5月14日正宗金牛座！祝自己生日快樂，買份大禮物同食雞翼獎勵自己 ✨🍗',
+                    note: '5月14日正宗金牛座白衣天使！祝自己生日快樂，食雞翼收大禮物 ✨🍗',
                     repeatYearly: true,
                     pinned: true,
                     checklist: getDefaultChecklist('birthday'),
                     createdAt: nowIso
                 },
                 {
+                    id: 'evt_nursing_osce',
+                    title: 'OSCE 臨床技能實操試',
+                    date: '2026-12-10',
+                    time: '09:00',
+                    category: 'exam',
+                    countMode: 'countdown',
+                    icon: '🩺',
+                    note: '洗手 7 Steps、對病人手帶 (3核5對)、Aseptic Technique 一 Take Pass！💪✨',
+                    repeatYearly: false,
+                    pinned: false,
+                    checklist: getDefaultChecklist('exam', 'OSCE'),
+                    createdAt: nowIso
+                },
+                {
+                    id: 'evt_nursing_ward',
+                    title: '出 Ward 實習 (Practicum)',
+                    date: '2027-01-11',
+                    time: '07:00',
+                    category: 'clinical',
+                    countMode: 'countdown',
+                    icon: '🏥',
+                    note: '準白衣天使出動！執齊三色筆、護士錶、較剪同電筒，加油！💉',
+                    repeatYearly: false,
+                    pinned: false,
+                    checklist: getDefaultChecklist('clinical'),
+                    createdAt: nowIso
+                },
+                {
                     id: 'evt_dad_bday',
-                    title: 'Dad 生日 👨🏻🎂',
+                    title: 'Dad 生日 👨🏻',
                     date: getNextOccurrenceDateString('05-26'),
                     time: '00:00',
                     category: 'birthday',
                     countMode: 'countdown',
                     icon: '🎁',
-                    note: '同自己一樣係5月壽星！記得訂檯同爸爸食大餐慶祝 🍽️',
+                    note: '同金牛雞翼一樣係5月壽星！記得訂檯同爸爸食大餐慶祝 🍽️',
                     repeatYearly: true,
                     pinned: false,
                     checklist: getDefaultChecklist('birthday'),
@@ -938,7 +1131,7 @@
                 },
                 {
                     id: 'evt_mum_bday',
-                    title: 'Mum 生日 👩🏻💐',
+                    title: 'Mum 生日 👩🏻',
                     date: getNextOccurrenceDateString('06-29'),
                     time: '00:00',
                     category: 'birthday',
@@ -952,13 +1145,13 @@
                 },
                 {
                     id: 'evt_bro_bday',
-                    title: '阿哥生日 👦🏻🎂',
+                    title: '阿哥生日 👦🏻',
                     date: getNextOccurrenceDateString('07-20'),
                     time: '00:00',
                     category: 'birthday',
                     countMode: 'countdown',
                     icon: '🍰',
-                    note: '同阿哥慶祝生日，食餐好嘅！🎉',
+                    note: '同整呢個 App 俾你嘅阿哥慶祝生日，食餐好嘅！🎉',
                     repeatYearly: true,
                     pinned: false,
                     checklist: getDefaultChecklist('birthday'),
@@ -966,13 +1159,13 @@
                 },
                 {
                     id: 'evt_sis_bday',
-                    title: '細妹 (處女嘉研) 生日 👧🏻🎀',
+                    title: '處女嘉研生日 👧🏻',
                     date: getNextOccurrenceDateString('09-22'),
                     time: '00:00',
                     category: 'birthday',
                     countMode: 'countdown',
                     icon: '🎀',
-                    note: '處女座細妹嘉研生日大快樂！準備禮物同蛋糕 🍓',
+                    note: '處女座嘉研生日大快樂！準備禮物同蛋糕 🍓',
                     repeatYearly: true,
                     pinned: false,
                     checklist: getDefaultChecklist('birthday'),
@@ -1046,8 +1239,8 @@
                 if (metaTheme) metaTheme.content = '#F0F7FF';
             } else {
                 mascotEl.innerHTML = SANRIO_MASCOTS.melody;
-                titleEl.textContent = 'My Melody 倒數日記';
-                badgeEl.textContent = '🎀 Sanrio Cute Timer';
+                titleEl.textContent = '金牛雞翼 🩺 夢幻倒數日記';
+                badgeEl.textContent = '🩺 Nurse Melody Timer';
                 if (metaTheme) metaTheme.content = '#FFF0F5';
             }
             playCuteSound('pop');
@@ -1059,27 +1252,35 @@
                 const raw = localStorage.getItem(STORAGE_KEY);
                 if (raw) {
                     events = JSON.parse(raw);
-                    const familyIds = ['evt_self_bday', 'evt_dad_bday', 'evt_mum_bday', 'evt_bro_bday', 'evt_sis_bday'];
+                    if (!Array.isArray(events)) {
+                        events = defaults;
+                    }
+                    const requiredIds = ['evt_self_bday', 'evt_nursing_osce', 'evt_nursing_ward', 'evt_dad_bday', 'evt_mum_bday', 'evt_bro_bday', 'evt_sis_bday'];
                     let updated = false;
-                    familyIds.forEach(fid => {
-                        const famEvt = defaults.find(d => d.id === fid);
-                        if (famEvt && !events.some(e => e.id === fid || e.title === famEvt.title)) {
-                            events.push(famEvt);
+                    requiredIds.forEach(fid => {
+                        const defEvt = defaults.find(d => d.id === fid);
+                        if (defEvt && !events.some(e => e.id === fid || e.title === defEvt.title)) {
+                            events.push(defEvt);
                             updated = true;
                         }
                     });
-                    // 自動修正舊版 05-24 自己生日做 05-14，並確保每項都有 checklist
+
+                    // 自動修正舊版名稱與日期，並清理開頭重複 Emoji
                     events.forEach(evt => {
                         if (evt.id === 'evt_self_bday' || (evt.title && evt.title.includes('金牛雞翼'))) {
                             const correctSelfDate = getNextOccurrenceDateString('05-14');
+                            evt.title = '金牛雞翼 (自己) 生日 🍗';
                             if (evt.date !== correctSelfDate) {
                                 evt.date = correctSelfDate;
-                                evt.note = '5月14日正宗金牛座！祝自己生日快樂，買份大禮物同食雞翼獎勵自己 ✨🍗';
-                                updated = true;
                             }
+                            updated = true;
+                        }
+                        if (evt.title && (evt.title.startsWith('🩺 ') || evt.title.startsWith('🏥 ') || evt.title.startsWith('💊 '))) {
+                            evt.title = evt.title.replace(/^(🩺|🏥|💊)\s+/, '');
+                            updated = true;
                         }
                         if (!Array.isArray(evt.checklist)) {
-                            evt.checklist = getDefaultChecklist(evt.category);
+                            evt.checklist = getDefaultChecklist(evt.category, evt.title);
                             updated = true;
                         }
                     });
@@ -1089,6 +1290,7 @@
                     saveToStorage();
                 }
             } catch (e) {
+                console.warn('讀取儲存資料時發生錯誤，已載入預設清單：', e);
                 events = defaults;
             }
         }
@@ -1105,7 +1307,7 @@
         }
 
         // --- 快速加入預設分類 ---
-        let currentPresetCat = 'family';
+        let currentPresetCat = 'nursing';
         function filterQuickPresets(pcat) {
             playCuteSound('pop');
             currentPresetCat = pcat;
@@ -1186,18 +1388,18 @@
         }
 
         const melodyQuotes = [
-            '「一齊期待每一個特別又幸福嘅日子啦～♪」',
-            '「5月有你自己(金牛雞翼)同 Dad 生日，超熱鬧呀！🍗🎂」',
-            '「同最愛嘅屋企人一齊倒數，時間都變得好溫柔～💖」',
-            '「撳下卡片嘅『🎁清單』就可以記低買咩生日禮物架啦！」',
-            '「夜晚用 iPhone 可以切換右上角 Kuromi 深色護眼模式架！😈💜」'
+            '「金牛雞翼加油呀！OSCE 臨床考試一定一 Take Pass！💉✨」',
+            '「出 Ward 企咗成日辛苦晒啦～返屋企要食返隻雞翼獎勵自己！🍗💖」',
+            '「無論係背 Pharmacology 定係寫 Care Plan，Melody 都陪住你溫書！📚🌸」',
+            '「記得撳右上角『🩺 姑娘小幫手』，入面有番薯鐘同埋計藥神器架！💊」',
+            '「5月14日係金牛雞翼大日子，全家人同 Melody 都超錫你！🎂🎀」'
         ];
         function triggerMelodyGreeting() {
             playCuteSound('success');
             shootPinkConfetti();
             const randomQuote = melodyQuotes[Math.floor(Math.random() * melodyQuotes.length)];
             document.getElementById('melodySpeech').textContent = randomQuote;
-            showToast('收到滿滿嘅幸福魔法！✨💕', '🌸');
+            showToast('白衣天使金牛雞翼，今日都要加油呀！💉💕', '🩺');
         }
 
         function getEventTiming(evt) {
@@ -1265,6 +1467,8 @@
 
         function getCategoryBadge(cat) {
             const map = {
+                exam: { label: '📚 考試/溫書', bg: 'bg-sky-100 text-sky-800 border-sky-300' },
+                clinical: { label: '🏥 出Ward實習', bg: 'bg-emerald-100 text-emerald-800 border-emerald-300' },
                 holiday: { label: '🌸 節日', bg: 'bg-pink-100 text-pink-700 border-pink-300' },
                 birthday: { label: '🎂 生日', bg: 'bg-amber-100 text-amber-800 border-amber-300' },
                 anniversary: { label: '💖 紀念日', bg: 'bg-rose-100 text-rose-700 border-rose-300' },
@@ -1479,7 +1683,7 @@
 
                             <!-- 標題與日期 -->
                             <div class="flex items-start gap-3">
-                                <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-melody-bg border-2 border-melody-pink flex items-center justify-center text-2xl flex-shrink-0">
+                                <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-melody-bg border-2 border-melody-pink flex items-center justify-center text-2xl flex-shrink-0 shadow-inner">
                                     ${evt.icon || '🐰'}
                                 </div>
                                 <div class="min-w-0 flex-1">
@@ -1489,8 +1693,13 @@
                                     <p class="text-xs font-bold text-melody-softbrown mt-0.5">
                                         🗓️ ${timing.formattedTarget}
                                     </p>
-                                    ${evt.note ? `<p class="text-xs text-melody-brown/90 mt-1.5 line-clamp-2 bg-melody-light px-2.5 py-1 rounded-xl border border-melody-pink/50">📝 ${escapeHtml(evt.note)}</p>` : ''}
                                 </div>
+                            </div>
+                            <!-- 固定高度備註區，確保同排所有卡片嘅倒數格仔 100% 水平對齊 -->
+                            <div class="mt-2.5 min-h-[46px] flex items-center">
+                                ${evt.note 
+                                    ? `<p class="w-full text-xs text-melody-brown/90 line-clamp-2 bg-melody-light px-3 py-1.5 rounded-xl border border-melody-pink/50">📝 ${escapeHtml(evt.note)}</p>` 
+                                    : `<p class="w-full text-xs text-melody-softbrown/60 italic bg-melody-light/50 px-3 py-1.5 rounded-xl border border-dashed border-melody-pink/30">✨ 期待呢個特別好日子到來～</p>`}
                             </div>
                         </div>
 
@@ -1597,12 +1806,12 @@
         }
 
         function switchBottomTab(tab) {
-            ['home', 'family', 'calendar', 'cloud'].forEach(t => {
+            ['home', 'nursing', 'family', 'hub'].forEach(t => {
                 const el = document.getElementById(`bnav-${t}`);
                 if (el) {
                     el.className = t === tab
-                        ? 'flex flex-col items-center gap-0.5 py-1 px-3 rounded-2xl text-melody-hot font-bold transition-transform active:scale-90'
-                        : 'flex flex-col items-center gap-0.5 py-1 px-3 rounded-2xl text-melody-softbrown font-bold transition-transform active:scale-90';
+                        ? 'flex flex-col items-center gap-0.5 py-1 px-2.5 rounded-2xl text-melody-hot font-bold transition-transform active:scale-90'
+                        : 'flex flex-col items-center gap-0.5 py-1 px-2.5 rounded-2xl text-melody-softbrown font-bold transition-transform active:scale-90';
                 }
             });
 
@@ -1610,13 +1819,108 @@
                 setViewMode('grid');
                 setCategoryFilter('all');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else if (tab === 'nursing') {
+                setViewMode('grid');
+                setCategoryFilter('exam');
+                filterQuickPresets('nursing');
+                showToast('顯示緊 Nursing 考試與出Ward專區！🩺', '💉');
             } else if (tab === 'family') {
                 setViewMode('grid');
                 setCategoryFilter('birthday');
                 filterQuickPresets('family');
-                showToast('顯示緊屋企人與生日倒數！🎂', '👨‍👩‍👧‍👦');
-            } else if (tab === 'calendar') {
-                setViewMode('calendar');
+                showToast('顯示緊屋企人生日倒數！🎂', '👨‍👩‍👧‍👦');
+            }
+        }
+
+        // --- 🩺 姑娘小幫手 (番薯鐘 + 計藥神器) 邏輯 ---
+        let pomoSecondsLeft = 25 * 60;
+        let pomoInterval = null;
+        let pomoRunning = false;
+
+        function openNurseHubModal() {
+            playCuteSound('pop');
+            const modal = document.getElementById('nurseHubModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeNurseHubModal() {
+            const modal = document.getElementById('nurseHubModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function updatePomoDisplay() {
+            const m = Math.floor(pomoSecondsLeft / 60);
+            const s = pomoSecondsLeft % 60;
+            const el = document.getElementById('pomoDisplay');
+            if (el) el.textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+        }
+
+        function setPomoMinutes(mins, label) {
+            playCuteSound('pop');
+            if (pomoInterval) clearInterval(pomoInterval);
+            pomoRunning = false;
+            pomoSecondsLeft = mins * 60;
+            document.getElementById('pomoModeLabel').textContent = label;
+            document.getElementById('pomoStartBtn').innerHTML = '▶️ 開始';
+            updatePomoDisplay();
+        }
+
+        function togglePomoTimer() {
+            playCuteSound('pop');
+            const btn = document.getElementById('pomoStartBtn');
+            if (pomoRunning) {
+                clearInterval(pomoInterval);
+                pomoRunning = false;
+                btn.innerHTML = '▶️ 繼續';
+            } else {
+                pomoRunning = true;
+                btn.innerHTML = '⏸️ 暫停';
+                pomoInterval = setInterval(() => {
+                    if (pomoSecondsLeft > 0) {
+                        pomoSecondsLeft--;
+                        updatePomoDisplay();
+                    } else {
+                        clearInterval(pomoInterval);
+                        pomoRunning = false;
+                        btn.innerHTML = '▶️ 開始';
+                        playCuteSound('success');
+                        shootPinkConfetti();
+                        showToast('🍅 番薯鐘時間到！金牛雞翼快啲飲啖水抖下啦～🍓', '🩺');
+                    }
+                }, 1000);
+            }
+        }
+
+        function resetPomoTimer() {
+            setPomoMinutes(25, '專注溫書模式 📚');
+        }
+
+        function calcDrugDosage() {
+            const want = parseFloat(document.getElementById('drugWant').value);
+            const have = parseFloat(document.getElementById('drugHave').value);
+            const vol = parseFloat(document.getElementById('drugVol').value) || 1;
+            const box = document.getElementById('drugResultBox');
+            if (want > 0 && have > 0) {
+                const res = ((want / have) * vol).toFixed(2).replace(/\.00$/, '');
+                box.innerHTML = `💉 所需抽取容量 / 劑量：<span class="text-melody-hot text-base">${res} mL (或單位)</span>`;
+            } else {
+                box.innerHTML = `💉 所需抽取容量 / 粒數：<span class="text-melody-hot text-base">--</span>`;
+            }
+        }
+
+        function calcIvRate() {
+            const vol = parseFloat(document.getElementById('ivVol').value);
+            const hrs = parseFloat(document.getElementById('ivHours').value);
+            const df = parseFloat(document.getElementById('ivDropFactor').value) || 20;
+            const box = document.getElementById('ivResultBox');
+            if (vol > 0 && hrs > 0) {
+                const mlPerHr = (vol / hrs).toFixed(1).replace(/\.0$/, '');
+                const gttPerMin = Math.round((vol * df) / (hrs * 60));
+                box.innerHTML = `💧 輸液速率：<span class="text-melody-hot">${mlPerHr} mL/hr</span> ｜ 滴速：<span class="text-melody-hot">${gttPerMin} gtt/min</span>`;
+            } else {
+                box.innerHTML = `💧 輸液速率：<span class="text-melody-hot">-- mL/hr</span> ｜ 滴速：<span class="text-melody-hot">-- gtt/min</span>`;
             }
         }
 
@@ -1751,6 +2055,21 @@
             modal.classList.remove('flex');
         }
 
+        // 100% 跨 iOS / iPad Safari 相容嘅圓角矩形繪製函數
+        function drawRoundedRectPath(ctx, x, y, width, height, radius) {
+            ctx.beginPath();
+            ctx.moveTo(x + radius, y);
+            ctx.lineTo(x + width - radius, y);
+            ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+            ctx.lineTo(x + width, y + height - radius);
+            ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+            ctx.lineTo(x + radius, y + height);
+            ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+            ctx.lineTo(x, y + radius);
+            ctx.quadraticCurveTo(x, y, x + radius, y);
+            ctx.closePath();
+        }
+
         function drawPosterCanvas(evt) {
             const canvas = document.getElementById('posterCanvas');
             if (!canvas) return;
@@ -1779,8 +2098,7 @@
             ctx.fillStyle = '#FFFFFF';
             ctx.strokeStyle = '#FF69B4';
             ctx.lineWidth = 8;
-            ctx.beginPath();
-            ctx.roundRect(45, 90, 450, 780, 40);
+            drawRoundedRectPath(ctx, 45, 90, 450, 780, 40);
             ctx.fill();
             ctx.stroke();
 
@@ -1803,8 +2121,7 @@
             ctx.fillStyle = '#FFF0F5';
             ctx.strokeStyle = '#FFB6C1';
             ctx.lineWidth = 4;
-            ctx.beginPath();
-            ctx.roundRect(85, 455, 370, 210, 30);
+            drawRoundedRectPath(ctx, 85, 455, 370, 210, 30);
             ctx.fill();
             ctx.stroke();
 
@@ -1976,7 +2293,7 @@
                     title, date, time, category, countMode,
                     icon: selectedIcon,
                     note, repeatYearly, pinned,
-                    checklist: getDefaultChecklist(category),
+                    checklist: getDefaultChecklist(category, title),
                     createdAt: new Date().toISOString()
                 });
                 showToast(`成功加入「${title}」！🎉`, selectedIcon);
@@ -2028,7 +2345,7 @@
                 countMode: 'countdown', icon,
                 note: customNote || '一鍵加入嘅特別好日子 ✨',
                 repeatYearly: isYearly, pinned: false,
-                checklist: getDefaultChecklist(category),
+                checklist: getDefaultChecklist(category, title),
                 createdAt: new Date().toISOString()
             });
             playCuteSound('success');
@@ -2043,9 +2360,9 @@
             currentCategory = cat;
             document.querySelectorAll('.cat-tab').forEach(btn => {
                 if (btn.dataset.cat === cat) {
-                    btn.className = 'cat-tab px-3.5 py-2 rounded-2xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all bg-melody-hot text-white shadow-sm';
+                    btn.className = 'cat-tab px-3.5 py-1.5 rounded-2xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all bg-melody-hot text-white shadow-sm shrink-0';
                 } else {
-                    btn.className = 'cat-tab px-3.5 py-2 rounded-2xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all melody-card text-melody-brown';
+                    btn.className = 'cat-tab px-3.5 py-1.5 rounded-2xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all bg-melody-light text-melody-brown border border-melody-pink shrink-0';
                 }
             });
             renderEvents();
