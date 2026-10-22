@@ -264,7 +264,7 @@
                         <span>🩺</span> <span class="hidden md:inline">姑娘小幫手</span>
                     </button>
                     <button onclick="openCloudModal()" class="candy-btn-secondary font-bold px-3 py-2 rounded-2xl text-xs sm:text-sm flex items-center gap-1" title="跨裝置同步與備份">
-                        <span>☁️</span> <span class="hidden md:inline">同步/備份</span>
+                        <span>💾</span> <span class="hidden md:inline">備份/轉移</span>
                     </button>
                     <button onclick="openIosGuideModal()" class="candy-btn-secondary font-bold px-3 py-2 rounded-2xl text-xs sm:text-sm flex items-center gap-1" title="加到 iPhone / iPad 主畫面">
                         <span>📱</span> <span class="hidden md:inline">App教學</span>
@@ -499,131 +499,162 @@
                 </div>
 
                 <div>
-                    <label class="block text-xs sm:text-sm font-bold text-melody-brown mb-1">📝 小備註 / 溫書重點 / 禮物 Idea (選填)</label>
-                    <input type="text" id="eventNote" maxlength="60" placeholder="例如：記得溫 Aseptic Technique、帶聽診器、食雞翼慶祝..."
-                        class="w-full px-3.5 py-2 rounded-2xl border-2 border-melody-pink focus:border-melody-hot focus:outline-none text-melody-brown bg-melody-light">
+                    <label class="block text-xs sm:text-sm font-bold text-melody-brown mb-1">📝 溫馨備註 / 溫書目標 (選填)</label>
+                    <input type="text" id="eventNote" maxlength="80" placeholder="例如：記得買士多啤梨蛋糕、溫熟 Ch.1-5..."
+                        class="w-full px-3.5 py-2 rounded-2xl border-2 border-melody-pink focus:border-melody-hot focus:outline-none text-melody-brown text-xs sm:text-sm bg-melody-light">
                 </div>
 
-                <!-- 實用開關選項 -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
-                    <label class="flex items-center gap-2 cursor-pointer select-none p-2.5 rounded-2xl bg-melody-light border border-melody-pink">
-                        <input type="checkbox" id="eventRepeat" class="w-4 h-4 accent-pink-500 rounded">
-                        <span class="text-xs font-bold text-melody-brown">🔁 每年自動重複</span>
+                <div class="flex flex-wrap items-center justify-between gap-2 pt-1">
+                    <label class="flex items-center gap-2 cursor-pointer select-none">
+                        <input type="checkbox" id="eventRepeat" checked class="w-4 h-4 accent-pink-500 rounded">
+                        <span class="text-xs font-bold text-melody-brown">🔁 每年自動重複 (生日/節日必剔)</span>
                     </label>
-                    <label class="flex items-center gap-2 cursor-pointer select-none p-2.5 rounded-2xl bg-melody-light border border-melody-pink">
+                    <label class="flex items-center gap-2 cursor-pointer select-none">
                         <input type="checkbox" id="eventPinned" class="w-4 h-4 accent-pink-500 rounded">
-                        <span class="text-xs font-bold text-melody-brown">📌 釘選喺最頂大橫幅</span>
+                        <span class="text-xs font-bold text-melody-brown">📌 釘選置頂主打</span>
                     </label>
                 </div>
 
-                <div class="flex items-center gap-3 pt-2">
-                    <button type="button" onclick="closeModal()" class="w-1/3 candy-btn-secondary py-2.5 rounded-2xl font-bold">
+                <div class="flex gap-2.5 pt-2">
+                    <button type="button" onclick="closeModal()" class="flex-1 candy-btn-secondary py-2.5 rounded-2xl font-bold text-xs sm:text-sm">
                         取消
                     </button>
-                    <button type="submit" class="w-2/3 candy-btn text-white py-2.5 rounded-2xl font-bold">
-                        💖 儲存日子
+                    <button type="submit" class="flex-1 candy-btn text-white py-2.5 rounded-2xl font-bold text-xs sm:text-sm">
+                        💖 儲存好日子
                     </button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- 2. 🎁 禮物與慶祝準備 Checklist Modal -->
+    <!-- 2. 🎁 禮物與溫書準備 Checklist Modal -->
     <div id="checklistModal" class="fixed inset-0 z-50 hidden items-end sm:items-center justify-center sm:p-4 bg-black/50 backdrop-blur-sm">
-        <div class="melody-card rounded-t-3xl sm:rounded-3xl max-w-md w-full p-5 sm:p-6 relative max-h-[85vh] flex flex-col">
-            <div class="flex items-center justify-between mb-3 pb-2.5 border-b-2 border-dashed border-melody-pink">
-                <div>
-                    <h3 id="checklistModalTitle" class="text-lg font-black text-melody-dark flex items-center gap-1.5">
-                        🎁 生日禮物 & 慶祝清單
-                    </h3>
-                    <p class="text-xs text-melody-softbrown">提早準備好蛋糕、禮物同訂位，唔怕臨急抱佛腳！</p>
-                </div>
-                <button onclick="closeChecklistModal()" class="w-8 h-8 rounded-full bg-melody-bg text-melody-dark font-bold flex items-center justify-center">
-                    ✕
-                </button>
+        <div class="melody-card rounded-t-3xl sm:rounded-3xl max-w-md w-full p-5 sm:p-6 relative max-h-[88vh] overflow-y-auto space-y-4">
+            <div class="flex items-center justify-between pb-2.5 border-b-2 border-dashed border-melody-pink">
+                <h3 id="checklistModalTitle" class="text-base sm:text-lg font-black text-melody-dark truncate pr-2">
+                    🎁 準備清單
+                </h3>
+                <button type="button" onclick="closeChecklistModal()" class="w-8 h-8 rounded-full bg-melody-bg text-melody-dark font-bold flex items-center justify-center shrink-0">✕</button>
             </div>
 
-            <div id="checklistItemsContainer" class="space-y-2 overflow-y-auto flex-1 py-2 pr-1">
+            <div id="checklistItemsContainer" class="space-y-2 max-h-60 overflow-y-auto pr-1">
                 <!-- 由 JS 動態渲染 Checklist 項目 -->
             </div>
 
-            <form onsubmit="addChecklistItem(event)" class="mt-3 pt-3 border-t border-melody-pink/50 flex gap-2">
-                <input type="text" id="newChecklistInput" required maxlength="40" placeholder="新增準備事項 (例如：買氣球、寫生日卡)..."
-                    class="flex-1 px-3.5 py-2 rounded-2xl border-2 border-melody-pink bg-melody-light text-melody-brown focus:outline-none">
-                <button type="submit" class="candy-btn text-white px-4 py-2 rounded-2xl font-bold text-sm whitespace-nowrap">
-                    ＋ 加入
+            <form onsubmit="addChecklistItem(event)" class="flex gap-2 pt-2 border-t border-melody-pink/40">
+                <input type="text" id="newChecklistInput" maxlength="50" placeholder="新增準備事項 (如: 買雞翼、溫 Pharm)..."
+                    class="flex-1 px-3.5 py-2 rounded-2xl border-2 border-melody-pink bg-melody-light text-xs sm:text-sm text-melody-brown focus:outline-none focus:border-melody-hot">
+                <button type="submit" class="candy-btn text-white px-4 py-2 rounded-2xl text-xs font-bold whitespace-nowrap">
+                    ＋ 新增
                 </button>
             </form>
         </div>
     </div>
 
-    <!-- 3. 📸 IG Story / WhatsApp 靚靚分享海報卡產生器 Modal -->
+    <!-- 3. 📸 9:16 IG Story / WhatsApp 分享海報卡 Modal -->
     <div id="posterModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-        <div class="melody-card rounded-3xl max-w-sm w-full p-5 relative flex flex-col items-center">
-            <div class="w-full flex items-center justify-between mb-3">
-                <h3 class="text-base font-black text-melody-dark">📸 專屬 IG Story 倒數分享卡</h3>
-                <button onclick="closePosterModal()" class="w-8 h-8 rounded-full bg-melody-bg text-melody-dark font-bold flex items-center justify-center">✕</button>
+        <div class="melody-card rounded-3xl max-w-sm w-full p-4 sm:p-5 relative max-h-[92vh] overflow-y-auto space-y-3 text-center">
+            <div class="flex items-center justify-between pb-2 border-b border-melody-pink/50">
+                <h3 class="text-sm sm:text-base font-black text-melody-dark flex items-center gap-1.5">
+                    <span>📸</span> 專屬倒數海報卡 (IG Story 比例)
+                </h3>
+                <button type="button" onclick="closePosterModal()" class="w-7 h-7 rounded-full bg-melody-bg text-melody-dark font-bold flex items-center justify-center text-xs">✕</button>
             </div>
 
-            <!-- Canvas 海報預覽 -->
-            <div class="w-full flex justify-center bg-melody-light p-2 rounded-2xl border border-melody-pink mb-3">
-                <canvas id="posterCanvas" width="540" height="960" class="w-56 sm:w-64 h-auto rounded-xl shadow-md"></canvas>
+            <div class="bg-melody-light p-2 rounded-2xl border-2 border-melody-pink inline-block mx-auto shadow-inner">
+                <canvas id="posterCanvas" width="540" height="960" class="w-56 sm:w-64 h-auto rounded-xl mx-auto block shadow-md"></canvas>
             </div>
 
-            <div class="flex gap-2 w-full">
-                <button onclick="downloadPosterImage()" class="flex-1 candy-btn text-white py-2.5 rounded-2xl font-bold text-sm flex items-center justify-center gap-1.5">
-                    📥 儲存高清海報相片
+            <div class="grid grid-cols-2 gap-2 pt-1">
+                <button type="button" onclick="downloadPosterImage()" class="candy-btn text-white py-2.5 px-3 rounded-2xl text-xs font-bold flex items-center justify-center gap-1">
+                    <span>📥</span> 儲存高清相片
                 </button>
-                <button onclick="shareWhatsAppGreeting()" class="candy-btn-secondary px-4 py-2.5 rounded-2xl font-bold text-sm flex items-center justify-center gap-1" title="複製祝賀語傳送到 WhatsApp">
-                    💬 WhatsApp
+                <button type="button" onclick="shareWhatsAppGreeting()" class="candy-btn-secondary py-2.5 px-3 rounded-2xl text-xs font-bold flex items-center justify-center gap-1">
+                    <span>💬</span> WhatsApp 分享
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- 4. ☁️ 跨裝置雲端同步 (iPhone ⇄ iPad) & 備份 Modal -->
+    <!-- 4. 💾 跨裝置備份、檔案匯出與同步 Modal (全新升級 iOS 友善版) -->
     <div id="cloudModal" class="fixed inset-0 z-50 hidden items-end sm:items-center justify-center sm:p-4 bg-black/50 backdrop-blur-sm">
-        <div class="melody-card rounded-t-3xl sm:rounded-3xl max-w-md w-full p-5 sm:p-6 relative max-h-[90vh] overflow-y-auto space-y-4">
+        <div class="melody-card rounded-t-3xl sm:rounded-3xl max-w-lg w-full p-5 sm:p-6 relative max-h-[90vh] overflow-y-auto space-y-4">
             <div class="flex items-center justify-between pb-2.5 border-b-2 border-dashed border-melody-pink">
-                <h3 class="text-lg font-black text-melody-dark flex items-center gap-2">
-                    <span>☁️</span> iPhone ⇄ iPad 雲端同步與備份
-                </h3>
+                <div>
+                    <h3 class="text-lg font-black text-melody-dark flex items-center gap-2">
+                        <span>💾</span> 備份資料 & iPhone ⇄ iPad 轉移
+                    </h3>
+                    <p id="backupStatsText" class="text-xs text-melody-softbrown mt-0.5">目前共有 0 個倒數日子（自動儲存在本機）</p>
+                </div>
                 <button onclick="closeCloudModal()" class="w-8 h-8 rounded-full bg-melody-bg text-melody-dark font-bold flex items-center justify-center">✕</button>
             </div>
 
-            <!-- 家庭雲端同步房間碼 -->
-            <div class="p-3.5 rounded-2xl bg-melody-light border-2 border-melody-pink space-y-2.5">
+            <!-- 方法 1：最推薦！檔案下載 & 檔案還原 (支援 iOS 檔案 App / AirDrop) -->
+            <div class="p-4 rounded-2xl bg-melody-light border-2 border-melody-pink space-y-2.5">
                 <div class="flex items-center justify-between">
-                    <span class="text-xs font-black text-melody-dark">🔗 跨裝置即時雲端同步碼</span>
-                    <span id="syncRoomStatus" class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-pink-100 text-pink-700">未連結同步碼</span>
+                    <span class="text-xs sm:text-sm font-black text-melody-dark flex items-center gap-1.5">
+                        📁 方法一：備份檔案下載 / 還原（最穩陣！）
+                    </span>
+                    <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 border border-emerald-300">支援 AirDrop / iCloud</span>
                 </div>
                 <p class="text-xs text-melody-softbrown leading-relaxed">
-                    喺你部 **iPhone** 同 **iPad** 輸入同一個自訂密碼（例如：<code class="font-bold text-melody-dark">taurus-514</code>），兩部機嘅倒數日子同禮物清單就會自動雲端即時同步！
+                    撳「下載備份檔」可以將所有日子同埋溫書清單儲存成檔案（可放喺 iPhone 檔案 App 或 AirDrop 去 iPad），還原時直接揀返個檔案就搞掂！
                 </p>
-                <div class="flex gap-2">
-                    <input type="text" id="syncRoomInput" maxlength="30" placeholder="輸入專屬同步碼 (如: melody-514)"
-                        class="flex-1 px-3 py-2 rounded-xl border-2 border-melody-pink bg-white text-gray-800 font-bold focus:outline-none">
-                    <button onclick="connectCloudSyncRoom()" class="candy-btn text-white px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap">
-                        ☁️ 連結同步
+                <div class="grid grid-cols-2 gap-2.5 pt-1">
+                    <button type="button" onclick="downloadBackupFile()" class="candy-btn text-white py-2.5 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5">
+                        <span>📥</span> 下載備份檔 (.json)
+                    </button>
+                    <button type="button" onclick="document.getElementById('backupFileInput').click()" class="candy-btn-secondary py-2.5 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5">
+                        <span>📂</span> 揀選備份檔還原
+                    </button>
+                    <input type="file" id="backupFileInput" accept=".json,application/json,text/plain" class="hidden" onchange="handleBackupFileUpload(event)">
+                </div>
+            </div>
+
+            <!-- 方法 2：文字備份碼複製 & 貼上還原 (改良 iOS 剪貼簿支援) -->
+            <div class="p-4 rounded-2xl bg-melody-light border-2 border-melody-pink space-y-2.5">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs sm:text-sm font-black text-melody-dark">📋 方法二：文字備份碼（WhatsApp / 備忘錄）</span>
+                    <button type="button" onclick="clearBackupTextarea()" class="text-[11px] font-bold text-melody-hot underline px-1">
+                        🗑️ 清空文字框(方便貼上)
+                    </button>
+                </div>
+                <p class="text-xs text-melody-softbrown">
+                    1️⃣ 舊機撳「複製備份碼」Send 去 WhatsApp 俾自己 ➔ 2️⃣ 新機撳右上角「清空文字框」，貼上備份碼再撳「確認還原」！
+                </p>
+                <textarea id="backupJsonArea" rows="3" placeholder="請喺呢度貼上 (Paste) 你嘅備份碼，然後撳下面「📥 貼上並確認還原」..."
+                    class="w-full p-2.5 rounded-2xl border-2 border-melody-pink text-xs font-mono text-melody-brown bg-white/90 focus:outline-none focus:border-melody-hot"></textarea>
+                <div class="grid grid-cols-2 gap-2.5">
+                    <button type="button" onclick="copyBackupData()" class="candy-btn-secondary py-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-1">
+                        📋 1. 複製目前備份碼
+                    </button>
+                    <button type="button" onclick="importBackupData()" class="candy-btn text-white py-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-1">
+                        📥 2. 貼上並確認還原
                     </button>
                 </div>
             </div>
 
-            <!-- 傳統 JSON 備份碼 -->
-            <div class="space-y-2 pt-1">
-                <label class="block text-xs font-bold text-melody-brown">💾 手動複製備份碼 / 還原資料：</label>
-                <textarea id="backupJsonArea" rows="3" class="w-full p-2.5 rounded-2xl border-2 border-melody-pink text-xs font-mono text-melody-brown bg-melody-light focus:outline-none"></textarea>
-                <div class="flex flex-wrap gap-2">
-                    <button onclick="copyBackupData()" class="flex-1 candy-btn-secondary py-2 rounded-xl text-xs font-bold">
-                        📋 複製備份碼
-                    </button>
-                    <button onclick="importBackupData()" class="flex-1 candy-btn-secondary py-2 rounded-xl text-xs font-bold">
-                        📥 貼上並還原
-                    </button>
-                    <button onclick="resetToDefaults()" class="w-full text-center text-xs text-melody-softbrown underline py-1">
-                        還原預設屋企人生日與節日清單
+            <!-- 方法 3：家庭雲端同步房間碼 -->
+            <div class="p-3.5 rounded-2xl bg-melody-bg/50 border border-melody-pink space-y-2">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-black text-melody-dark">☁️ 方法三：雲端即時同步碼（連線模式）</span>
+                    <span id="syncRoomStatus" class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-pink-100 text-pink-700">本機獨立儲存中</span>
+                </div>
+                <div class="flex gap-2">
+                    <input type="text" id="syncRoomInput" maxlength="30" placeholder="輸入同步碼 (如: taurus-514)"
+                        class="flex-1 px-3 py-1.5 rounded-xl border border-melody-pink bg-white text-gray-800 text-xs font-bold focus:outline-none">
+                    <button type="button" onclick="connectCloudSyncRoom()" class="candy-btn-secondary px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap">
+                        ☁️ 連結雲端
                     </button>
                 </div>
+            </div>
+
+            <!-- 重設為預設清單（防誤觸雙重確認） -->
+            <div class="pt-1 border-t border-melody-pink/40 flex items-center justify-between">
+                <span class="text-[11px] text-melody-softbrown">想重新載入預設屋企人生日同 Nursing 清單？</span>
+                <button type="button" id="resetDefaultBtn" onclick="resetToDefaults()" class="text-xs text-rose-500 font-bold underline py-1 px-2 rounded-lg hover:bg-rose-50">
+                    🔄 還原出場預設清單
+                </button>
             </div>
         </div>
     </div>
@@ -1948,19 +1979,277 @@
         }
 
         function renderChecklistItems() {
-            const evt = events.find(e => e.id === activeChecklistEventId);
             const container = document.getElementById('checklistItemsContainer');
-            if (!evt || !container) return;
+            if (!container) return;
+            const evt = events.find(e => e.id === activeChecklistEventId);
+            if (!evt) return;
+            const list = Array.isArray(evt.checklist) ? evt.checklist : [];
 
-            container.innerHTML = evt.checklist.map((item, idx) => `
-                <div class="flex items-center justify-between gap-2 p-3 rounded-2xl bg-melody-light border border-melody-pink">
-                    <label class="flex items-center gap-2.5 flex-1 cursor-pointer select-none">
-                        <input type="checkbox" ${item.done ? 'checked' : ''} onchange="toggleChecklistItem(${idx})" class="w-5 h-5 accent-pink-500 rounded">
-                        <span class="text-sm font-bold ${item.done ? 'line-through opacity-50' : ''} text-melody-brown">${escapeHtml(item.text)}</span>
+            if (list.length === 0) {
+                container.innerHTML = `<p class="text-xs text-melody-softbrown text-center py-4">暫時未有準備事項，喺下面加返個啦 ✨</p>`;
+                return;
+            }
+
+            container.innerHTML = list.map((item, idx) => `
+                <div class="flex items-center justify-between gap-2 p-2.5 rounded-2xl bg-melody-light border border-melody-pink">
+                    <label class="flex items-center gap-2.5 flex-1 cursor-pointer select-none min-w-0">
+                        <input type="checkbox" ${item.done ? 'checked' : ''} onchange="toggleChecklistItem(${idx})" class="w-4 h-4 accent-pink-500 rounded shrink-0">
+                        <span class="text-xs sm:text-sm font-bold truncate ${item.done ? 'line-through text-melody-softbrown opacity-70' : 'text-melody-brown'}">
+                            ${escapeHtml(item.text)}
+                        </span>
                     </label>
-                    <button onclick="removeChecklistItem(${idx})" class="text-xs text-melody-softbrown hover:text-rose-500 px-2">✕</button>
+                    <button type="button" onclick="removeChecklistItem(${idx})" class="text-xs text-melody-softbrown hover:text-rose-500 px-1.5 py-0.5 rounded-lg shrink-0">
+                        ✕
+                    </button>
                 </div>
             `).join('');
+        }
+
+        // --- 💾 備份、檔案下載匯入與雲端同步 Modal (全面修復版) ---
+        let resetConfirmPending = false;
+
+        function updateBackupModalStats() {
+            const statsEl = document.getElementById('backupStatsText');
+            if (statsEl) {
+                const nowStr = new Date().toLocaleTimeString('zh-HK', { hour: '2-digit', minute: '2-digit' });
+                statsEl.textContent = `目前共儲存咗 ${events.length} 個大日子（本機自動儲存於 ${nowStr}）`;
+            }
+        }
+
+        function openCloudModal() {
+            playCuteSound('pop');
+            resetConfirmPending = false;
+            const resetBtn = document.getElementById('resetDefaultBtn');
+            if (resetBtn) resetBtn.textContent = '🔄 還原出場預設清單';
+
+            const modal = document.getElementById('cloudModal');
+            const textarea = document.getElementById('backupJsonArea');
+            if (textarea) {
+                textarea.value = JSON.stringify(events, null, 2);
+            }
+            updateBackupModalStats();
+
+            const savedRoom = localStorage.getItem('melody_sync_room_code');
+            if (savedRoom && document.getElementById('syncRoomInput')) {
+                document.getElementById('syncRoomInput').value = savedRoom;
+            }
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeCloudModal() {
+            const modal = document.getElementById('cloudModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function clearBackupTextarea() {
+            playCuteSound('pop');
+            const textarea = document.getElementById('backupJsonArea');
+            if (textarea) {
+                textarea.value = '';
+                textarea.focus();
+            }
+            showToast('已清空文字框！而家可以長按「貼上 (Paste)」備份碼啦～📋', '✨');
+        }
+
+        // 方法 1A：下載 .json 備份檔（iPhone / iPad / Mac / PC 100% 通用）
+        function downloadBackupFile() {
+            try {
+                const backupPayload = {
+                    app: 'MyMelodyCountdown',
+                    version: 2,
+                    exportedAt: new Date().toISOString(),
+                    theme: localStorage.getItem(THEME_KEY) || 'melody',
+                    events: events
+                };
+                const jsonStr = JSON.stringify(backupPayload, null, 2);
+                const blob = new Blob([jsonStr], { type: 'application/json;charset=utf-8' });
+                const url = URL.createObjectURL(blob);
+                const todayStr = new Date().toISOString().split('T')[0];
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `金牛雞翼倒數備份_${todayStr}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+
+                playCuteSound('success');
+                showToast('已下載備份檔案 (.json)！可以 Save 落 iPhone 檔案或 AirDrop 啦 📁💖', '📥');
+            } catch (e) {
+                showToast('下載備份檔失敗，請改用下方複製備份碼～', '⚠️');
+            }
+        }
+
+        // 方法 1B：揀選 .json 備份檔一鍵還原
+        function handleBackupFileUpload(event) {
+            const file = event.target.files && event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const content = e.target.result;
+                restoreFromRawJsonString(content);
+                event.target.value = ''; // 重設 input 方便下次再揀同一個檔案
+            };
+            reader.onerror = function() {
+                showToast('讀取備份檔案失敗，請再試一次～', '⚠️');
+            };
+            reader.readAsText(file, 'UTF-8');
+        }
+
+        // 方法 2A：複製文字備份碼（同時支援最新 iOS Clipboard API 及傳統 Fallback）
+        async function copyBackupData() {
+            const textarea = document.getElementById('backupJsonArea');
+            const freshJson = JSON.stringify(events, null, 2);
+            if (textarea) textarea.value = freshJson;
+
+            let copied = false;
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                try {
+                    await navigator.clipboard.writeText(freshJson);
+                    copied = true;
+                } catch (err) {
+                    copied = false;
+                }
+            }
+
+            if (!copied && textarea) {
+                try {
+                    textarea.focus();
+                    textarea.select();
+                    textarea.setSelectionRange(0, 999999); // iOS 必備選取範圍
+                    copied = document.execCommand('copy');
+                } catch (err) {
+                    copied = false;
+                }
+            }
+
+            playCuteSound('success');
+            if (copied) {
+                showToast(`成功複製 ${events.length} 個日子嘅備份碼！可以貼去 WhatsApp / 備忘錄啦 📋💖`, '✅');
+            } else {
+                showToast('請長按上方文字框「全選並複製」備份碼 📋', '💡');
+            }
+        }
+
+        // 統一解析與清理備份字串（自動修復 iOS 智慧彎引號與各種格式）
+        function restoreFromRawJsonString(rawStr) {
+            if (!rawStr || !rawStr.trim()) {
+                showToast('文字框係吉架！請先貼上 (Paste) 你嘅備份碼先呀～📋', '⚠️');
+                return;
+            }
+
+            try {
+                // 自動修復 iOS 備忘錄或 WhatsApp 常出現嘅彎引號 “ ” ‘ ’
+                let cleaned = rawStr.trim()
+                    .replace(/[\u201C\u201D]/g, '"')
+                    .replace(/[\u2018\u2019]/g, "'");
+
+                // 如果用家連同其他文字一齊 Copy 咗，自動擷取最外層嘅 [...] 或 {...}
+                const firstBracket = cleaned.indexOf('[');
+                const firstBrace = cleaned.indexOf('{');
+                if (firstBracket !== -1 && (firstBrace === -1 || firstBracket < firstBrace)) {
+                    const lastBracket = cleaned.lastIndexOf(']');
+                    if (lastBracket > firstBracket) {
+                        cleaned = cleaned.slice(firstBracket, lastBracket + 1);
+                    }
+                } else if (firstBrace !== -1) {
+                    const lastBrace = cleaned.lastIndexOf('}');
+                    if (lastBrace > firstBrace) {
+                        cleaned = cleaned.slice(firstBrace, lastBrace + 1);
+                    }
+                }
+
+                const parsed = JSON.parse(cleaned);
+                let restoredList = null;
+
+                // 支援純 Array 格式 或 { events: [...] } 物件格式，甚至單一物件格式
+                if (Array.isArray(parsed)) {
+                    restoredList = parsed;
+                } else if (parsed && Array.isArray(parsed.events)) {
+                    restoredList = parsed.events;
+                    if (parsed.theme) setTheme(parsed.theme);
+                } else if (parsed && parsed.title && parsed.date) {
+                    restoredList = [parsed];
+                }
+
+                if (!restoredList || restoredList.length === 0) {
+                    showToast('備份資料入面搵唔到任何倒數日子呀～', '⚠️');
+                    return;
+                }
+
+                // 規範化每個載入嘅日子，確保欄位齊全唔會 Crash
+                events = restoredList.map((item, idx) => ({
+                    id: item.id || ('evt_restored_' + Date.now() + '_' + idx),
+                    title: String(item.title || '未命名好日子'),
+                    date: String(item.date || getNextOccurrenceDateString('05-14')),
+                    time: String(item.time || '00:00'),
+                    category: item.category || 'holiday',
+                    countMode: item.countMode || 'countdown',
+                    icon: item.icon || '🐰',
+                    note: item.note ? String(item.note) : '',
+                    repeatYearly: Boolean(item.repeatYearly),
+                    pinned: Boolean(item.pinned),
+                    checklist: Array.isArray(item.checklist) ? item.checklist : getDefaultChecklist(item.category || 'holiday', item.title || ''),
+                    createdAt: item.createdAt || new Date().toISOString()
+                }));
+
+                saveToStorage();
+                renderEvents();
+                updateBackupModalStats();
+                closeCloudModal();
+                playCuteSound('success');
+                shootPinkConfetti();
+                showToast(`太好啦！成功還原咗 ${events.length} 個倒數日子！🎉💖`, '💾');
+            } catch (e) {
+                console.warn('Restore parse error:', e);
+                showToast('備份碼格式唔完整～建議先撳「🗑️ 清空文字框」再重新貼上！', '⚠️');
+            }
+        }
+
+        // 方法 2B：撳「貼上並確認還原」
+        function importBackupData() {
+            const textarea = document.getElementById('backupJsonArea');
+            if (!textarea) return;
+            restoreFromRawJsonString(textarea.value);
+        }
+
+        function connectCloudSyncRoom() {
+            const code = document.getElementById('syncRoomInput').value.trim();
+            if (!code) {
+                showToast('請輸入一個專屬同步碼先呀～', '⚠️');
+                return;
+            }
+            localStorage.setItem('melody_sync_room_code', code);
+            const roomStatus = document.getElementById('syncRoomStatus');
+            if (roomStatus) roomStatus.textContent = `已設定同步碼: ${code}`;
+
+            if (typeof window.subscribeToSyncRoom === 'function') {
+                window.subscribeToSyncRoom(code, true);
+                window.pushEventsToCloud();
+            } else {
+                showToast(`已記低同步碼「${code}」！跨機轉移建議直接用上方「下載備份檔」最快最穩陣 📁`, '💡');
+            }
+        }
+
+        function resetToDefaults() {
+            const resetBtn = document.getElementById('resetDefaultBtn');
+            if (!resetConfirmPending) {
+                resetConfirmPending = true;
+                if (resetBtn) resetBtn.textContent = '⚠️ 再撳一次確認還原預設（會覆蓋現有修改）';
+                playCuteSound('pop');
+                showToast('再撳一次紅色字確認還原預設清單～', '💡');
+                return;
+            }
+            resetConfirmPending = false;
+            events = getDefaultEvents();
+            saveToStorage();
+            renderEvents();
+            closeCloudModal();
+            playCuteSound('success');
+            showToast('已還原預設屋企人生日與 Nursing 倒數清單！🌸', '🐰');
         }
 
         function toggleChecklistItem(idx) {
@@ -2368,70 +2657,6 @@
             renderEvents();
         }
 
-        // --- 雲端同步與備份 Modal ---
-        function openCloudModal() {
-            playCuteSound('pop');
-            const modal = document.getElementById('cloudModal');
-            document.getElementById('backupJsonArea').value = JSON.stringify(events, null, 2);
-            const savedRoom = localStorage.getItem('melody_sync_room_code');
-            if (savedRoom) document.getElementById('syncRoomInput').value = savedRoom;
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-        }
-
-        function closeCloudModal() {
-            const modal = document.getElementById('cloudModal');
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-        }
-
-        function connectCloudSyncRoom() {
-            const code = document.getElementById('syncRoomInput').value.trim();
-            if (!code) {
-                showToast('請輸入一個專屬同步碼先呀～', '⚠️');
-                return;
-            }
-            if (typeof window.subscribeToSyncRoom === 'function') {
-                window.subscribeToSyncRoom(code, true);
-                window.pushEventsToCloud();
-            }
-        }
-
-        function copyBackupData() {
-            const textarea = document.getElementById('backupJsonArea');
-            textarea.select();
-            document.execCommand('copy');
-            playCuteSound('success');
-            showToast('已複製備份碼到剪貼簿！📋', '💖');
-        }
-
-        function importBackupData() {
-            try {
-                const raw = document.getElementById('backupJsonArea').value.trim();
-                const parsed = JSON.parse(raw);
-                if (Array.isArray(parsed)) {
-                    events = parsed;
-                    saveToStorage();
-                    renderEvents();
-                    closeCloudModal();
-                    playCuteSound('success');
-                    shootPinkConfetti();
-                    showToast('成功還原倒數日子資料！🎉', '💾');
-                }
-            } catch (e) {
-                showToast('備份碼格式唔正確呀～', '⚠️');
-            }
-        }
-
-        function resetToDefaults() {
-            events = getDefaultEvents();
-            saveToStorage();
-            renderEvents();
-            closeCloudModal();
-            playCuteSound('pop');
-            showToast('已還原預設屋企人生日與節日清單！🌸', '🐰');
-        }
-
         function openIosGuideModal() {
             playCuteSound('pop');
             const modal = document.getElementById('iosGuideModal');
@@ -2464,8 +2689,56 @@
             })[m]);
         }
 
+        // 確保所有 onclick 函數 100% 掛載喺 window 全域物件上
+        Object.assign(window, {
+            setTheme,
+            filterQuickPresets,
+            toggleSound,
+            triggerMelodyGreeting,
+            setViewMode,
+            switchBottomTab,
+            openNurseHubModal,
+            closeNurseHubModal,
+            setPomoMinutes,
+            togglePomoTimer,
+            resetPomoTimer,
+            calcDrugDosage,
+            calcIvRate,
+            openChecklistModal,
+            closeChecklistModal,
+            toggleChecklistItem,
+            addChecklistItem,
+            removeChecklistItem,
+            openCloudModal,
+            closeCloudModal,
+            clearBackupTextarea,
+            downloadBackupFile,
+            handleBackupFileUpload,
+            copyBackupData,
+            importBackupData,
+            connectCloudSyncRoom,
+            resetToDefaults,
+            exportEventToIcs,
+            openPosterModal,
+            closePosterModal,
+            downloadPosterImage,
+            shareWhatsAppGreeting,
+            openModal,
+            closeModal,
+            selectIcon,
+            saveEvent,
+            editEvent,
+            deleteEvent,
+            togglePin,
+            addQuickPreset,
+            setCategoryFilter,
+            openIosGuideModal,
+            closeIosGuideModal,
+            renderEvents
+        });
+
         // --- 初始化啟動 ---
-        window.onload = function() {
+        function initApp() {
             setupAppleTouchIcon();
             const savedTheme = localStorage.getItem(THEME_KEY) || 'melody';
             setTheme(savedTheme);
@@ -2473,7 +2746,13 @@
             renderQuickPresetButtons();
             renderEvents();
             setInterval(tickCountdowns, 1000);
-        };
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initApp);
+        } else {
+            initApp();
+        }
     </script>
 </body>
 </html>
